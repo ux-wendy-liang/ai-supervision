@@ -1,294 +1,159 @@
-# AI Coach Mentor: Designing the "SimCare for Coaches"
+# AI Coach Mentor
+## Designing a Practice Tool for the $4.5B Coaching Industry
 
-**Role:** Product Designer (End-to-end, 0→1)
-**Timeline:** 4 weeks (Research → Prototype)
-**Skills Demonstrated:** Market Research, Competitive Analysis, Product Strategy, Interaction Design, Prototyping
-
----
-
-## The Hook
-
-> "I pay $200/hour for supervision, but I can only afford it once a month. By the time I discuss a difficult client case, it's already three weeks old."
->
-> — An ICF-certified coach during user research
-
-What if coaches could practice and get feedback anytime they wanted, at a fraction of the cost?
+**Role:** Product Designer (0→1)
+**Timeline:** 4 weeks with AI
+**Scope:** Research → Strategy → Prototype
 
 ---
 
-## Context: The $4.5B Coaching Industry's Hidden Problem
+## Impact Preview
 
-The professional coaching industry is booming — **109,200 coaches worldwide**, generating **$4.56 billion annually** (ICF 2023). But there's a paradox:
-
-**Coaches help others grow, but struggle to grow themselves.**
-
-### Why?
-
-| The Problem | Impact |
-|-------------|--------|
-| Supervision costs **$150-300/hour** | Coaches can't afford frequent feedback |
-| Scheduling is hard | Must coordinate with busy supervisors |
-| Low frequency (1x/month typical) | Delayed feedback on difficult cases |
-| Psychological barrier | Reluctant to expose weaknesses to peers |
-
-### The Opportunity
-
-I discovered a fascinating parallel: **SimCare AI** — a YC-backed startup that lets therapy students practice with AI patients — had raised $4.5M and was generating $4M ARR by solving this exact problem for therapists.
-
-**But no one was doing this for coaches.**
+| Metric | Result |
+|--------|--------|
+| Market gap identified | **$5-7M TAM** in underserved segment |
+| Time to prototype | **4 weeks** (vs. 3-4 months traditional) |
+| Validated model | Based on SimCare AI's **$4M ARR** success |
 
 ---
 
-## My Challenge
+## The Story
 
-**Design an AI-powered practice tool that helps coaches improve their skills through simulated sessions and instant feedback, based on ICF professional standards.**
+### 1. The Spark
 
-### Constraints
+I discovered a paradox in the coaching industry:
 
-- AI cannot replace human supervision (ICF won't count AI hours for certification)
-- Must position as a "supplement" not a "replacement"
-- Coaches are skeptical of AI evaluating their work
-- Competing against free ChatGPT
+> **Coaches help others grow, but struggle to grow themselves.**
 
----
+Why? Supervision costs **$150-300/hour**. Most coaches can only afford it once a month. By the time they discuss a difficult client case, it's already weeks old.
 
-## Research: Understanding the Coach's Journey
+**Then I found SimCare AI** — a YC-backed startup letting therapy students practice with AI patients. $4.5M raised. $4M revenue. 70+ universities.
 
-### Competitive Landscape Analysis
-
-I mapped the existing market and found a clear gap:
-
-| Need | Existing Solution | Gap |
-|------|------------------|-----|
-| Coach practice (simulated clients) | ❌ None | **Wide open** |
-| Real-time ICF-based feedback | ❌ None | **Wide open** |
-| Coach skill improvement | ⚠️ Limited | **Half empty** |
-| ICF documentation | RaeNotes ✅ | Solved |
-| AI for coachees | Rocky.ai ✅ | Solved |
-
-**Key Insight:** Everyone is building AI to coach people. No one is building AI to coach the coaches.
-
-### User Research Synthesis
-
-I identified three distinct user segments with different needs:
-
-| Segment | Pain Point | Priority |
-|---------|-----------|----------|
-| **Coach trainees** | Need lots of practice, price-sensitive | ⭐⭐⭐⭐⭐ |
-| **New ACC coaches** | Want to improve, limited budget | ⭐⭐⭐⭐⭐ |
-| **Experienced coaches** | Handle difficult cases, avoid burnout | ⭐⭐⭐ |
-
-**Decision:** Focus on trainees and new coaches — they have the highest need and willingness to try new tools.
+**My insight:** *No one was doing this for coaches.*
 
 ---
 
-## Design Strategy: Two Core Features
+### 2. The Opportunity
 
-Based on research, I defined two complementary features:
-
-### Feature 1: Simulate Practice
-
-**Concept:** AI-simulated clients with various personas and challenges
-
-**Why this works:**
-- Coaches can practice anytime (24/7)
-- No scheduling needed
-- Safe space to make mistakes
-- Instant feedback based on ICF standards
-
-### Feature 2: Session Review
-
-**Concept:** Upload real coaching sessions for AI analysis
-
-**Why this works:**
-- Helps working coaches improve
-- Auto-transcription saves time
-- Inline feedback at specific moments
-- Track client progress over time
-
----
-
-## Design Decisions & Rationale
-
-### 1. Real-time Feedback Sidebar
-
-**Challenge:** How do we give feedback without disrupting the conversation flow?
-
-**Solution:** A collapsible sidebar showing:
-- Current coaching tip
-- Talk ratio (coach vs client)
-- Open question count
-- Empathy moment tracking
-
-**Why:** Inspired by Poised (communication coach app) — real-time private feedback is their killer feature. Coaches can glance at it without breaking flow.
-
-![Practice Session Interface]
+I mapped the market and found a clear gap:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Practice with Li Wei                              [00:05:32]│
-├─────────────────────────────────────────┬───────────────────┤
-│                                         │  Real-time Tips   │
-│   [Client message bubble]               │                   │
-│                                         │  ✓ Great job!     │
-│   [Coach message bubble]                │  "Great open-     │
-│                                         │   ended question" │
-│   [Client message bubble]               │                   │
-│                                         │  Session Stats    │
-│                                         │  Talk: 35%/65%    │
-│                                         │  Open Q: 4/5      │
-│   ┌─────────────────────────────────┐   │                   │
-│   │ Type your response...        📤 │   │  Try This:        │
-│   └─────────────────────────────────┘   │  "What does X     │
-│                                         │   mean to you?"   │
-└─────────────────────────────────────────┴───────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    MARKET MAP                           │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  AI for Coachees          AI for Coaches               │
+│  ─────────────           ──────────────                │
+│  Rocky.ai ✓              Practice tool: ❌ EMPTY       │
+│  Coachello ✓             Real-time feedback: ❌ EMPTY  │
+│  CoachHub ✓              Skill tracking: ⚠️ Limited    │
+│                                                         │
+│  Everyone builds AI      Nobody builds AI              │
+│  to COACH people         to COACH the coaches          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### 2. ICF Core Skills Assessment
-
-**Challenge:** How do we make AI feedback feel credible and actionable?
-
-**Solution:**
-- Structure feedback around ICF's official 8 Core Competencies
-- Show score + change from last time
-- Split into "What you did well" + "Areas to improve"
-- Include specific timestamps and examples
-- Provide ICF definitions for educational value
-
-**Why:** Grounding in ICF standards adds legitimacy. Coaches already know this framework.
-
-### 3. Persona Selection System
-
-**Challenge:** How do we make practice sessions feel realistic and varied?
-
-**Solution:** 6 distinct client personas with:
-- Different presenting problems (career, leadership, stress, etc.)
-- Difficulty levels (Beginner → Advanced)
-- Customizable emotional states
-- Estimated session duration
-
-**Why:** Variety prevents boredom. Difficulty progression supports skill building.
-
-### 4. Transcript with Inline Comments
-
-**Challenge:** How do we help coaches review and learn from specific moments?
-
-**Solution:** Full transcript with:
-- Timestamp navigation
-- Green highlights for good moments
-- Amber highlights for improvement opportunities
-- Specific suggestions for each flagged moment
-
-**Why:** This mirrors how music students review recordings with teacher annotations.
+**Target users:** 71,000+ ICF-certified coaches, especially trainees and new coaches who are price-sensitive and practice-hungry.
 
 ---
 
-## Key Design Principles
+### 3. The Strategy
 
-### 1. "Supplement, Not Replace"
+I had to solve a positioning challenge:
 
-Every design decision reinforces that this is a **practice tool**, not a replacement for human supervision:
+> AI can't replace human supervision (ICF won't count AI hours). So how do we create value?
 
-- Clear positioning in marketing copy
-- Focus on skill-building, not certification
-- Encourage users to discuss insights with real supervisors
+**My decision:** Position as a **practice tool**, not a replacement.
 
-### 2. "Private & Safe"
-
-Addressing the psychological barrier of exposing weaknesses:
-
-- Progress is personal, not shared
-- No public leaderboards
-- Emphasis on growth, not judgment
-
-### 3. "Grounded in Standards"
-
-Building trust with a skeptical audience:
-
-- All assessments based on ICF framework
-- Definitions and resources included
-- Educational, not just evaluative
+| What We Are | What We're Not |
+|-------------|----------------|
+| Unlimited practice reps | Certification credit |
+| Instant feedback | Human judgment |
+| Safe space to fail | Performance review |
 
 ---
 
-## Results & Impact
+### 4. The Solution
 
-### Prototype Validation
+Two complementary features:
 
-- Built interactive prototype in React
-- Covers complete user journey: Landing → Practice → Report
-- Ready for user testing with real coaches
+**Feature A: Simulate Practice**
+Practice with AI clients anytime. Get real-time feedback based on ICF standards.
 
-### Market Validation (Planned)
-
-- Landing page to test conversion
-- Target: 5-10 user interviews with ACC coaches
-- Pricing test: $79/year (SimCare's proven price point)
-
-### Business Case
-
-| Metric | Value |
-|--------|-------|
-| Target users | 71,000+ ICF-certified coaches |
-| Price point | $79-99/year |
-| Potential TAM | $5-7M |
-| Comparable | SimCare AI ($4M ARR, YC-backed) |
+**Feature B: Session Review**
+Upload real sessions. Get AI-powered analysis and growth tracking.
 
 ---
 
-## Reflection & Learnings
+### 5. Key Design Decisions
 
-### What Worked Well
+**Decision 1: Real-time feedback sidebar**
 
-1. **Starting with market research** — Discovered the "SimCare for Coaches" opportunity before designing anything
-2. **Learning from adjacents** — Borrowed proven patterns from Poised (real-time feedback) and SimCare (practice simulation)
-3. **Grounding in standards** — ICF framework gave the product credibility
+*Challenge:* How to give feedback without disrupting conversation flow?
 
-### What I'd Do Differently
+*Solution:* Collapsible sidebar with live stats (talk ratio, question quality, empathy moments). Coach can glance without breaking flow.
 
-1. **Earlier user interviews** — Would validate assumptions with coaches sooner
-2. **Voice interface** — Coaching is conversational; text feels unnatural
-3. **Mobile experience** — Coaches may want to review sessions on-the-go
+*Why:* Borrowed from Poised app — their real-time private feedback is the killer feature.
 
-### What's Next
-
-1. User testing with 5-10 real coaches
-2. Voice input integration
-3. AI model fine-tuning for coaching-specific feedback
+![Practice Session - shows chat interface with real-time tips sidebar]
 
 ---
 
-## Appendix: Design Artifacts
+**Decision 2: ICF-grounded assessment**
 
-### Information Architecture
+*Challenge:* How to make AI feedback feel credible to skeptical coaches?
+
+*Solution:* Structure all feedback around ICF's official 8 Core Competencies. Include definitions, timestamps, specific examples.
+
+*Why:* Coaches already know this framework. It's the industry standard.
+
+![Report Page - shows skill assessment with ICF categories]
+
+---
+
+**Decision 3: Persona variety with difficulty levels**
+
+*Challenge:* How to keep practice engaging and progressive?
+
+*Solution:* 6 distinct client personas (career anxiety, leadership, burnout, etc.) with Beginner → Advanced difficulty.
+
+*Why:* Variety prevents boredom. Progression supports skill-building.
+
+![Persona Selection - shows client cards with difficulty tags]
+
+---
+
+## Reflection
+
+### What I'd explore next
+- Voice interface (coaching is conversational)
+- Mobile experience for on-the-go review
+- AI fine-tuning on real coaching transcripts
+
+### Why AI-assisted design matters
+This project would typically take a cross-functional team 3-4 months: market research, competitive analysis, user research synthesis, design exploration, prototyping.
+
+I did it in **4 weeks** by leveraging AI as a research partner and design accelerator — while maintaining the strategic thinking that only a human designer can provide.
+
+---
+
+## Prototype
+
+[View Interactive Prototype →](#)
 
 ```
-Landing Page
-├── Dashboard
-│   ├── Quick Stats
-│   ├── Recent Sessions
-│   └── ICF Skills Radar
-├── Simulate Practice
-│   ├── Persona Selection
-│   ├── Practice Settings
-│   └── Practice Session
-│       └── Session Report
-├── Session Review
-│   ├── Upload Session
-│   └── Review with Feedback
-├── Clients (for real sessions)
-│   └── Client Detail
-└── Progress Tracking
+Landing → Dashboard → Practice Selection →
+Session → Report → Progress Tracking
 ```
-
-### Key Screens
-
-1. **Landing Page** — Value proposition, two features, user types
-2. **Dashboard** — Overview, quick actions, skill radar
-3. **Practice Selection** — Persona cards, settings
-4. **Practice Session** — Chat interface, real-time tips
-5. **Session Report** — ICF assessment, transcript review
 
 ---
 
-*Case study by [Your Name] | January 2026*
+*Case study by [Your Name]*
+
+---
+
+**Sources:**
+- [UXfol.io Case Study Template](https://blog.uxfol.io/ux-case-study-template/)
+- [IxDF: How to Write UX Case Studies](https://www.interaction-design.org/literature/article/how-to-write-great-case-studies-for-your-ux-design-portfolio)
+- [CareerFoundry: UX Portfolio Examples](https://careerfoundry.com/en/blog/ux-design/ux-portfolio-examples-inspiration/)
