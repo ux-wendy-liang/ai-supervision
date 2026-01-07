@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Search, Clock, TrendingUp, ChevronRight, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Plus, Search, Clock, MoreVertical } from 'lucide-react';
 
 const clients = [
   {

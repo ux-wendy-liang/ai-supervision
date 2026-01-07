@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Upload, Mic, FileAudio, Clock, Users, ChevronRight, Check, Loader } from 'lucide-react';
+import { ArrowLeft, Upload, Mic, FileAudio, Clock, ChevronRight, Check, Loader } from 'lucide-react';
 
 const recentClients = [
   { id: 1, name: 'Li Ming', sessions: 8, lastSession: '3 days ago' },

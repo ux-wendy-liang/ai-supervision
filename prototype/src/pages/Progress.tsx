@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Award, Target, Calendar, ChevronRight } from 'lucide-react';
-import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const radarData = [
   { skill: 'Active Listening', current: 80, first: 55 },
@@ -16,12 +16,6 @@ const trendData = [
   { month: 'Nov', score: 68 },
   { month: 'Dec', score: 73 },
   { month: 'Jan', score: 80 },
-];
-
-const icfLevels = [
-  { name: 'ACC', threshold: 60, color: 'green' },
-  { name: 'PCC', threshold: 80, color: 'indigo' },
-  { name: 'MCC', threshold: 95, color: 'purple' },
 ];
 
 const skillDetails = [

@@ -1,5 +1,5 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Clock, Calendar, TrendingUp, Target, FileText, Share, Download, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Clock, Calendar, Target, FileText, Share, Download, ChevronRight } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const clientData = {
@@ -50,7 +50,6 @@ const sessions = [
 
 export default function ClientDetail() {
   const navigate = useNavigate();
-  const { id } = useParams();
 
   return (
     <div className="min-h-screen bg-gray-50">
