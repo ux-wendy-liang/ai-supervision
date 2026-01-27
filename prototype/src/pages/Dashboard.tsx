@@ -31,8 +31,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 border border-gray-100">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-              <MessageSquare className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+              <MessageSquare className="w-6 h-6 text-teal-600" />
             </div>
             <div>
               <div className="text-2xl font-bold text-gray-900">47</div>
@@ -42,8 +42,8 @@ export default function Dashboard() {
         </div>
         <div className="bg-white rounded-xl p-6 border border-gray-100">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <Clock className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6 text-gray-600" />
             </div>
             <div>
               <div className="text-2xl font-bold text-gray-900">12.5h</div>
@@ -83,9 +83,9 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => navigate('/practice')}
-                className="flex items-center gap-4 p-5 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl hover:from-indigo-100 hover:to-purple-100 transition-all group"
+                className="flex items-center gap-4 p-5 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all group"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+                <div className="w-14 h-14 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center">
                   <Play className="w-7 h-7 text-white" />
                 </div>
                 <div className="text-left">
@@ -96,9 +96,9 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => navigate('/review')}
-                className="flex items-center gap-4 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl hover:from-purple-100 hover:to-pink-100 transition-all group"
+                className="flex items-center gap-4 p-5 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all group"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <div className="w-14 h-14 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl flex items-center justify-center">
                   <Target className="w-7 h-7 text-white" />
                 </div>
                 <div className="text-left">
@@ -114,7 +114,7 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Recent Sessions</h2>
-              <button className="text-indigo-600 text-sm font-medium hover:text-indigo-700">View All</button>
+              <button className="text-teal-600 text-sm font-medium hover:text-teal-700">View All</button>
             </div>
             <div className="space-y-3">
               {recentSessions.map((session) => (
@@ -124,12 +124,12 @@ export default function Dashboard() {
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors"
                 >
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    session.type === 'practice' ? 'bg-indigo-100' : 'bg-purple-100'
+                    session.type === 'practice' ? 'bg-teal-100' : 'bg-gray-100'
                   }`}>
                     {session.type === 'practice' ? (
-                      <MessageSquare className="w-5 h-5 text-indigo-600" />
+                      <MessageSquare className="w-5 h-5 text-teal-600" />
                     ) : (
-                      <Target className="w-5 h-5 text-purple-600" />
+                      <Target className="w-5 h-5 text-gray-600" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -158,8 +158,8 @@ export default function Dashboard() {
                 <Radar
                   name="Skills"
                   dataKey="value"
-                  stroke="#6366f1"
-                  fill="#6366f1"
+                  stroke="#0d9488"
+                  fill="#0d9488"
                   fillOpacity={0.3}
                 />
               </RadarChart>
@@ -167,7 +167,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => navigate('/progress')}
-            className="w-full mt-4 py-2 text-indigo-600 text-sm font-medium hover:bg-indigo-50 rounded-lg transition-colors"
+            className="w-full mt-4 py-2 text-teal-600 text-sm font-medium hover:bg-teal-50 rounded-lg transition-colors"
           >
             View Full Progress
           </button>
@@ -175,26 +175,26 @@ export default function Dashboard() {
       </div>
 
       {/* ICF Progress Banner */}
-      <div className="mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
+      <div className="mt-6 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold mb-1">Your Path to PCC</h3>
-            <p className="text-indigo-100">You're 72% of the way to PCC certification level</p>
+            <p className="text-gray-400">You're 72% of the way to PCC certification level</p>
           </div>
           <div className="flex items-center gap-8">
             <div className="text-center">
               <div className="text-2xl font-bold">65%</div>
-              <div className="text-xs text-indigo-200">Active Listening</div>
+              <div className="text-xs text-gray-500">Active Listening</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">58%</div>
-              <div className="text-xs text-indigo-200">Powerful Questions</div>
+              <div className="text-xs text-gray-500">Powerful Questions</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">80%</div>
-              <div className="text-xs text-indigo-200">Building Trust</div>
+              <div className="text-xs text-gray-500">Building Trust</div>
             </div>
-            <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:shadow-lg transition-all">
+            <button className="px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl hover:shadow-lg transition-all">
               View Details
             </button>
           </div>

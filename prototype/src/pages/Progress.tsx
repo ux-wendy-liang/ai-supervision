@@ -56,8 +56,8 @@ export default function Progress() {
       <div className="grid grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 border border-gray-100">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+              <Target className="w-5 h-5 text-teal-600" />
             </div>
             <span className="text-sm text-gray-500">Total Practices</span>
           </div>
@@ -66,8 +66,8 @@ export default function Progress() {
         </div>
         <div className="bg-white rounded-xl p-6 border border-gray-100">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-gray-600" />
             </div>
             <span className="text-sm text-gray-500">Practice Hours</span>
           </div>
@@ -82,7 +82,7 @@ export default function Progress() {
             <span className="text-sm text-gray-500">Current Level</span>
           </div>
           <div className="text-3xl font-bold text-gray-900">ACC</div>
-          <div className="text-sm text-indigo-600 mt-1">Working toward PCC</div>
+          <div className="text-sm text-teal-600 mt-1">Working toward PCC</div>
         </div>
         <div className="bg-white rounded-xl p-6 border border-gray-100">
           <div className="flex items-center gap-3 mb-2">
@@ -116,8 +116,8 @@ export default function Progress() {
                 <Radar
                   name="Current"
                   dataKey="current"
-                  stroke="#6366f1"
-                  fill="#6366f1"
+                  stroke="#0d9488"
+                  fill="#0d9488"
                   fillOpacity={0.3}
                 />
               </RadarChart>
@@ -129,7 +129,7 @@ export default function Progress() {
               <span className="text-gray-500">First Session</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-teal-500 rounded-full"></div>
               <span className="text-gray-500">Current</span>
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function Progress() {
                 <Line
                   type="monotone"
                   dataKey="score"
-                  stroke="#6366f1"
+                  stroke="#0d9488"
                   strokeWidth={3}
                   dot={{ fill: '#6366f1', strokeWidth: 2, r: 4 }}
                 />
@@ -176,7 +176,7 @@ export default function Progress() {
                   <div
                     key={dayIdx}
                     className={`w-8 h-8 rounded-lg ${
-                      practiced ? 'bg-indigo-500' : 'bg-gray-100'
+                      practiced ? 'bg-teal-500' : 'bg-gray-100'
                     }`}
                   />
                 ))}
@@ -200,7 +200,7 @@ export default function Progress() {
               <div className="flex-1 relative">
                 <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all"
+                    className="h-full bg-gradient-to-r from-gray-700 to-gray-900 rounded-full transition-all"
                     style={{ width: `${skill.score}%` }}
                   />
                 </div>
@@ -211,7 +211,7 @@ export default function Progress() {
                 />
                 {/* PCC marker */}
                 <div
-                  className="absolute top-0 w-0.5 h-4 bg-indigo-700"
+                  className="absolute top-0 w-0.5 h-4 bg-gray-900"
                   style={{ left: `${skill.pcc}%` }}
                 />
               </div>
@@ -220,7 +220,7 @@ export default function Progress() {
               </div>
               <div className="w-24 text-right">
                 {skill.score >= skill.pcc ? (
-                  <span className="text-sm text-indigo-600 font-medium">PCC Level ✓</span>
+                  <span className="text-sm text-teal-600 font-medium">PCC Level ✓</span>
                 ) : skill.score >= skill.acc ? (
                   <span className="text-sm text-green-600 font-medium">ACC Level ✓</span>
                 ) : (
@@ -236,22 +236,22 @@ export default function Progress() {
             <span className="text-gray-500">ACC Standard (60%)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-indigo-700 rounded-full"></div>
+            <div className="w-3 h-3 bg-gray-900 rounded-full"></div>
             <span className="text-gray-500">PCC Standard (80%)</span>
           </div>
         </div>
       </div>
 
       {/* Skill Deep Dive CTA */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold mb-1">Focus Area: Powerful Questions</h3>
-            <p className="text-indigo-100">Your weakest skill is 15% below PCC standard. Practice focused exercises to improve.</p>
+            <p className="text-gray-400">Your weakest skill is 15% below PCC standard. Practice focused exercises to improve.</p>
           </div>
           <button
             onClick={() => navigate('/practice')}
-            className="flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl hover:shadow-lg transition-all"
+            className="flex items-center gap-2 px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl hover:shadow-lg transition-all"
           >
             Start Focused Practice
             <ChevronRight className="w-5 h-5" />

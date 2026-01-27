@@ -56,7 +56,7 @@ export default function Review() {
                 onDrop={(e) => { e.preventDefault(); setDragOver(false); handleUpload(); }}
                 className={`border-2 border-dashed rounded-xl p-12 text-center transition-all ${
                   dragOver
-                    ? 'border-indigo-500 bg-indigo-50'
+                    ? 'border-gray-900 bg-gray-50'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -67,7 +67,7 @@ export default function Review() {
                 <p className="text-sm text-gray-500 mb-4">Supports MP3, WAV, M4A (Max 500MB)</p>
                 <button
                   onClick={handleUpload}
-                  className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors"
+                  className="px-6 py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition-colors"
                 >
                   Browse Files
                 </button>
@@ -75,25 +75,25 @@ export default function Review() {
             )}
 
             {uploadState === 'uploading' && (
-              <div className="border-2 border-indigo-200 bg-indigo-50 rounded-xl p-12 text-center">
-                <Loader className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
+              <div className="border-2 border-gray-300 bg-gray-50 rounded-xl p-12 text-center">
+                <Loader className="w-12 h-12 text-teal-600 animate-spin mx-auto mb-4" />
                 <h3 className="font-medium text-gray-900 mb-2">Uploading...</h3>
-                <div className="w-64 h-2 bg-indigo-200 rounded-full mx-auto overflow-hidden">
-                  <div className="h-full bg-indigo-600 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+                <div className="w-64 h-2 bg-gray-200 rounded-full mx-auto overflow-hidden">
+                  <div className="h-full bg-gray-900 rounded-full animate-pulse" style={{ width: '60%' }}></div>
                 </div>
               </div>
             )}
 
             {uploadState === 'processing' && (
-              <div className="border-2 border-purple-200 bg-purple-50 rounded-xl p-12 text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileAudio className="w-8 h-8 text-purple-600" />
+              <div className="border-2 border-gray-300 bg-gray-50 rounded-xl p-12 text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FileAudio className="w-8 h-8 text-gray-600" />
                 </div>
                 <h3 className="font-medium text-gray-900 mb-2">Processing Recording...</h3>
                 <p className="text-sm text-gray-500 mb-4">Transcribing and analyzing with AI</p>
                 <div className="flex items-center justify-center gap-2">
-                  <Loader className="w-5 h-5 text-purple-600 animate-spin" />
-                  <span className="text-purple-600">This may take a few minutes</span>
+                  <Loader className="w-5 h-5 text-gray-600 animate-spin" />
+                  <span className="text-gray-600">This may take a few minutes</span>
                 </div>
               </div>
             )}
@@ -157,11 +157,11 @@ export default function Review() {
                   onClick={() => setSelectedClient(client.id)}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
                     selectedClient === client.id
-                      ? 'bg-indigo-50 border-2 border-indigo-500'
+                      ? 'bg-gray-100 border-2 border-gray-900'
                       : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
                   }`}
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
+                  <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white font-medium">
                     {client.name.charAt(0)}
                   </div>
                   <div className="flex-1 text-left">
@@ -169,13 +169,13 @@ export default function Review() {
                     <div className="text-xs text-gray-500">{client.sessions} sessions • {client.lastSession}</div>
                   </div>
                   {selectedClient === client.id && (
-                    <Check className="w-5 h-5 text-indigo-600" />
+                    <Check className="w-5 h-5 text-teal-600" />
                   )}
                 </button>
               ))}
             </div>
 
-            <button className="w-full mt-4 py-2 text-indigo-600 text-sm font-medium hover:bg-indigo-50 rounded-lg transition-colors">
+            <button className="w-full mt-4 py-2 text-teal-600 text-sm font-medium hover:bg-teal-50 rounded-lg transition-colors">
               + Add New Client
             </button>
           </div>
@@ -184,15 +184,15 @@ export default function Review() {
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Recent Reviews</h2>
-              <button className="text-indigo-600 text-sm font-medium hover:text-indigo-700">View All</button>
+              <button className="text-teal-600 text-sm font-medium hover:text-teal-700">View All</button>
             </div>
             <div className="space-y-3">
               <div
                 onClick={() => navigate('/review/session')}
                 className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors"
               >
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <FileAudio className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <FileAudio className="w-5 h-5 text-gray-600" />
                 </div>
                 <div className="flex-1">
                   <div className="font-medium text-gray-900">Session with Li Ming</div>
@@ -204,8 +204,8 @@ export default function Review() {
                 <ChevronRight className="w-5 h-5 text-gray-400" />
               </div>
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <FileAudio className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <FileAudio className="w-5 h-5 text-gray-600" />
                 </div>
                 <div className="flex-1">
                   <div className="font-medium text-gray-900">Session with Wang Fang</div>

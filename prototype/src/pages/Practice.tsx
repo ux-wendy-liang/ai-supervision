@@ -72,8 +72,8 @@ const personas = [
 ];
 
 const colorMap: Record<string, { bg: string; text: string; light: string }> = {
-  indigo: { bg: 'bg-indigo-500', text: 'text-indigo-600', light: 'bg-indigo-50' },
-  purple: { bg: 'bg-purple-500', text: 'text-purple-600', light: 'bg-purple-50' },
+  indigo: { bg: 'bg-gray-800', text: 'text-gray-700', light: 'bg-gray-50' },
+  purple: { bg: 'bg-gray-700', text: 'text-gray-600', light: 'bg-gray-50' },
   pink: { bg: 'bg-pink-500', text: 'text-pink-600', light: 'bg-pink-50' },
   amber: { bg: 'bg-amber-500', text: 'text-amber-600', light: 'bg-amber-50' },
   green: { bg: 'bg-green-500', text: 'text-green-600', light: 'bg-green-50' },
@@ -112,7 +112,7 @@ export default function Practice() {
               onClick={() => setSelectedPersona(persona.id)}
               className={`bg-white rounded-xl border-2 p-6 cursor-pointer transition-all ${
                 isSelected
-                  ? 'border-indigo-500 shadow-lg shadow-indigo-500/10'
+                  ? 'border-gray-900 shadow-lg shadow-gray-500/10'
                   : 'border-gray-100 hover:border-gray-200 hover:shadow-md'
               }`}
             >
@@ -163,7 +163,7 @@ export default function Practice() {
             {/* Real-time Feedback */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
               <div className="flex items-center gap-3">
-                <MessageCircle className="w-5 h-5 text-indigo-600" />
+                <MessageCircle className="w-5 h-5 text-teal-600" />
                 <div>
                   <div className="font-medium text-gray-900">Real-time Tips</div>
                   <div className="text-sm text-gray-500">Get hints during conversation</div>
@@ -171,14 +171,14 @@ export default function Practice() {
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" defaultChecked className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900"></div>
               </label>
             </div>
 
             {/* Client Personality */}
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="text-sm text-gray-500 mb-2">Client Openness</div>
-              <select className="w-full p-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <select className="w-full p-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-500">
                 <option>Talkative</option>
                 <option>Moderate</option>
                 <option>Reserved</option>
@@ -188,7 +188,7 @@ export default function Practice() {
             {/* Emotional State */}
             <div className="p-4 bg-gray-50 rounded-xl">
               <div className="text-sm text-gray-500 mb-2">Emotional State</div>
-              <select className="w-full p-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <select className="w-full p-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-500">
                 <option>Calm</option>
                 <option>Anxious</option>
                 <option>Frustrated</option>
@@ -199,7 +199,7 @@ export default function Practice() {
           <div className="flex justify-end mt-6">
             <button
               onClick={() => navigate('/practice/session')}
-              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all"
+              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-gray-500/30 transition-all"
             >
               Start Practice
               <ChevronRight className="w-5 h-5" />

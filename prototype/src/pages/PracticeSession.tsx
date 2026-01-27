@@ -99,7 +99,7 @@ export default function PracticeSession() {
                 <div
                   className={`max-w-lg px-4 py-3 rounded-2xl ${
                     msg.role === 'coach'
-                      ? 'bg-indigo-600 text-white rounded-br-md'
+                      ? 'bg-gray-900 text-white rounded-br-md'
                       : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
                   }`}
                 >
@@ -108,7 +108,7 @@ export default function PracticeSession() {
                       <span className="text-xs font-medium text-gray-500">Li Wei (Client)</span>
                     )}
                     {msg.role === 'coach' && (
-                      <span className="text-xs font-medium text-indigo-200">You (Coach)</span>
+                      <span className="text-xs font-medium text-gray-400">You (Coach)</span>
                     )}
                   </div>
                   <p>{msg.text}</p>
@@ -136,11 +136,11 @@ export default function PracticeSession() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Type your response or click the mic to speak..."
-                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               />
               <button
                 onClick={handleSend}
-                className="p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+                className="p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -203,8 +203,8 @@ export default function PracticeSession() {
                       <span className="text-gray-900 font-medium">35% / 65%</span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden flex">
-                      <div className="w-[35%] bg-indigo-500"></div>
-                      <div className="w-[65%] bg-purple-300"></div>
+                      <div className="w-[35%] bg-gray-800"></div>
+                      <div className="w-[65%] bg-gray-300"></div>
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
                       <span>You</span>
@@ -227,9 +227,9 @@ export default function PracticeSession() {
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-indigo-50 rounded-xl p-4">
-                <h4 className="text-sm font-medium text-indigo-700 mb-2">Try This</h4>
-                <p className="text-sm text-indigo-600 italic">
+              <div className="bg-teal-50 rounded-xl p-4">
+                <h4 className="text-sm font-medium text-teal-700 mb-2">Try This</h4>
+                <p className="text-sm text-teal-600 italic">
                   "What does 'disappointing your family' mean to you?"
                 </p>
               </div>

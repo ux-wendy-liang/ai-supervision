@@ -93,7 +93,7 @@ export default function Report() {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-4xl font-bold text-indigo-600">{overallScore}</div>
+            <div className="text-4xl font-bold text-teal-600">{overallScore}</div>
             <div className="text-sm text-gray-500">Overall Score</div>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function Report() {
             onClick={() => setActiveTab('overview')}
             className={`px-4 py-2 font-medium rounded-lg transition-colors ${
               activeTab === 'overview'
-                ? 'bg-indigo-100 text-indigo-700'
+                ? 'bg-gray-200 text-gray-900'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -114,7 +114,7 @@ export default function Report() {
             onClick={() => setActiveTab('transcript')}
             className={`px-4 py-2 font-medium rounded-lg transition-colors ${
               activeTab === 'transcript'
-                ? 'bg-indigo-100 text-indigo-700'
+                ? 'bg-gray-200 text-gray-900'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -145,7 +145,7 @@ export default function Report() {
                     <div className="flex items-center gap-4">
                       <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                          className="h-full bg-gradient-to-r from-gray-700 to-gray-900 rounded-full"
                           style={{ width: `${skill.score}%` }}
                         />
                       </div>
@@ -194,11 +194,11 @@ export default function Report() {
                       </div>
 
                       {/* Tip */}
-                      <div className="mt-4 bg-indigo-50 rounded-xl p-4">
-                        <div className="flex items-center gap-2 text-indigo-700 font-medium mb-2">
+                      <div className="mt-4 bg-teal-50 rounded-xl p-4">
+                        <div className="flex items-center gap-2 text-teal-700 font-medium mb-2">
                           💡 Try This Next Time
                         </div>
-                        <p className="text-sm text-indigo-800">{skill.tip}</p>
+                        <p className="text-sm text-teal-800">{skill.tip}</p>
                       </div>
 
                       {/* Definition */}
@@ -260,8 +260,8 @@ export default function Report() {
                     <div className="text-gray-500 mb-1">Talk Ratio</div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden flex">
-                        <div className="w-[35%] bg-indigo-500"></div>
-                        <div className="w-[65%] bg-purple-300"></div>
+                        <div className="w-[35%] bg-teal-500"></div>
+                        <div className="w-[65%] bg-gray-300"></div>
                       </div>
                       <span className="text-gray-900">35/65</span>
                     </div>
@@ -273,7 +273,7 @@ export default function Report() {
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => navigate('/practice')}
-                  className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all"
+                  className="w-full py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-gray-500/30 transition-all"
                 >
                   Practice Again
                 </button>
@@ -296,7 +296,7 @@ export default function Report() {
                       <div className="flex-1">
                         <div className={`inline-block px-4 py-2 rounded-xl ${
                           item.speaker === 'Coach'
-                            ? 'bg-indigo-100 text-indigo-900'
+                            ? 'bg-gray-200 text-gray-900'
                             : 'bg-gray-100 text-gray-900'
                         }`}>
                           <div className="text-xs font-medium mb-1 opacity-70">{item.speaker}</div>

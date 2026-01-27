@@ -10,7 +10,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate('/')}
@@ -20,9 +20,9 @@ export default function Login() {
           Back to Home
         </button>
 
-        <div className="bg-white rounded-2xl shadow-xl shadow-indigo-500/10 p-8">
+        <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-8">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -39,7 +39,7 @@ export default function Login() {
                 <input
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -51,22 +51,22 @@ export default function Login() {
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-500" />
                 <span className="text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-indigo-600 hover:text-indigo-700">Forgot password?</a>
+              <a href="#" className="text-gray-900 hover:text-gray-700">Forgot password?</a>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all"
+              className="w-full py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-gray-500/30 transition-all"
             >
               Sign In
             </button>
@@ -101,7 +101,7 @@ export default function Login() {
 
           <p className="text-center text-gray-600 text-sm mt-8">
             Don't have an account?{' '}
-            <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">Sign up free</a>
+            <a href="#" className="text-gray-900 hover:text-gray-700 font-medium">Sign up free</a>
           </p>
         </div>
       </div>

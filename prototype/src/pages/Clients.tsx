@@ -73,7 +73,7 @@ export default function Clients() {
             <p className="text-gray-600">Track your clients' growth journey</p>
           </div>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition-colors">
           <Plus className="w-5 h-5" />
           Add Client
         </button>
@@ -86,10 +86,10 @@ export default function Clients() {
           <input
             type="text"
             placeholder="Search clients..."
-            className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
           />
         </div>
-        <select className="px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <select className="px-4 py-3 border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-gray-500">
           <option>All Status</option>
           <option>Active</option>
           <option>Paused</option>
@@ -112,7 +112,7 @@ export default function Clients() {
           <div className="text-sm text-gray-500">Total Sessions</div>
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-100">
-          <div className="text-2xl font-bold text-indigo-600">65%</div>
+          <div className="text-2xl font-bold text-teal-600">65%</div>
           <div className="text-sm text-gray-500">Avg Progress</div>
         </div>
       </div>
@@ -140,7 +140,7 @@ export default function Clients() {
               >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
+                    <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white font-medium">
                       {client.name.charAt(0)}
                     </div>
                     <div>
@@ -164,7 +164,7 @@ export default function Clients() {
                           client.progress >= 80
                             ? 'bg-green-500'
                             : client.progress >= 50
-                            ? 'bg-indigo-500'
+                            ? 'bg-teal-500'
                             : 'bg-amber-500'
                         }`}
                         style={{ width: `${client.progress}%` }}

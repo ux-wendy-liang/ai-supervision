@@ -87,7 +87,7 @@ export default function ReviewSession() {
             onClick={() => setActiveTab('notes')}
             className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors ${
               activeTab === 'notes'
-                ? 'bg-indigo-100 text-indigo-700'
+                ? 'bg-gray-200 text-gray-900'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -98,7 +98,7 @@ export default function ReviewSession() {
             onClick={() => setActiveTab('transcript')}
             className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors ${
               activeTab === 'transcript'
-                ? 'bg-indigo-100 text-indigo-700'
+                ? 'bg-gray-200 text-gray-900'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -119,7 +119,7 @@ export default function ReviewSession() {
                   onClick={() => setEditingNotes(!editingNotes)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
                     editingNotes
-                      ? 'bg-indigo-100 text-indigo-700'
+                      ? 'bg-gray-200 text-gray-900'
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
@@ -136,7 +136,7 @@ export default function ReviewSession() {
                     <input
                       type="text"
                       defaultValue={sessionNotes.topic}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
                   ) : (
                     <div className="text-gray-900">{sessionNotes.topic}</div>
@@ -150,7 +150,7 @@ export default function ReviewSession() {
                     <textarea
                       defaultValue={sessionNotes.clientState}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     />
                   ) : (
                     <div className="text-gray-900">{sessionNotes.clientState}</div>
@@ -174,12 +174,12 @@ export default function ReviewSession() {
                     <div className="p-4 space-y-2">
                       {sessionNotes.exploration.map((item, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-gray-700">
-                          <span className="text-indigo-500 mt-1">•</span>
+                          <span className="text-teal-500 mt-1">•</span>
                           {editingNotes ? (
                             <input
                               type="text"
                               defaultValue={item}
-                              className="flex-1 px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="flex-1 px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
                             />
                           ) : (
                             item
@@ -212,7 +212,7 @@ export default function ReviewSession() {
                             <input
                               type="text"
                               defaultValue={item}
-                              className="flex-1 px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="flex-1 px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
                             />
                           ) : (
                             item
@@ -240,12 +240,12 @@ export default function ReviewSession() {
                     <div className="p-4 space-y-2">
                       {sessionNotes.followUp.map((item, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-gray-700">
-                          <span className="text-purple-500 mt-1">•</span>
+                          <span className="text-gray-500 mt-1">•</span>
                           {editingNotes ? (
                             <input
                               type="text"
                               defaultValue={item}
-                              className="flex-1 px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="flex-1 px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
                             />
                           ) : (
                             item
@@ -264,7 +264,7 @@ export default function ReviewSession() {
               <div className="bg-white rounded-xl border border-gray-100 p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Session Score</h3>
                 <div className="text-center mb-4">
-                  <div className="text-4xl font-bold text-indigo-600">82</div>
+                  <div className="text-4xl font-bold text-teal-600">82</div>
                   <div className="text-sm text-gray-500">Overall Score</div>
                 </div>
                 <div className="space-y-3">
@@ -283,7 +283,7 @@ export default function ReviewSession() {
                       <span className="font-medium">78%</span>
                     </div>
                     <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: '78%' }}></div>
+                      <div className="h-full bg-gray-800 rounded-full" style={{ width: '78%' }}></div>
                     </div>
                   </div>
                   <div>
@@ -316,10 +316,10 @@ export default function ReviewSession() {
               {/* Client Growth Link */}
               <button
                 onClick={() => navigate('/clients/1')}
-                className="w-full p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 text-left hover:from-indigo-100 hover:to-purple-100 transition-colors"
+                className="w-full p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 text-left hover:from-gray-100 hover:to-gray-200 transition-colors"
               >
-                <div className="font-medium text-indigo-900">View Li Ming's Growth File</div>
-                <div className="text-sm text-indigo-600">8 sessions • Track their progress →</div>
+                <div className="font-medium text-gray-900">View Li Ming's Growth File</div>
+                <div className="text-sm text-teal-600">8 sessions • Track their progress →</div>
               </button>
             </div>
           </div>
@@ -336,7 +336,7 @@ export default function ReviewSession() {
                       <div className="flex-1">
                         <div className={`inline-block px-4 py-2 rounded-xl ${
                           item.speaker === 'Coach'
-                            ? 'bg-indigo-100 text-indigo-900'
+                            ? 'bg-gray-200 text-gray-900'
                             : 'bg-gray-100 text-gray-900'
                         }`}>
                           <div className="text-xs font-medium mb-1 opacity-70">{item.speaker}</div>

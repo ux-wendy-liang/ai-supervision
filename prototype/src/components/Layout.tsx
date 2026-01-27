@@ -18,7 +18,7 @@ export default function Layout() {
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-gray-900">AI Coach Mentor</span>
@@ -34,7 +34,7 @@ export default function Layout() {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       isActive
-                        ? 'bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 font-medium'
+                        ? 'bg-gradient-to-r from-gray-100 to-gray-50 text-gray-900 font-medium'
                         : 'text-gray-600 hover:bg-gray-50'
                     }`
                   }

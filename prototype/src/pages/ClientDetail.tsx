@@ -64,7 +64,7 @@ export default function ClientDetail() {
               <ArrowLeft className="w-5 h-5 text-gray-600" />
             </button>
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+              <div className="w-14 h-14 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white text-xl font-bold">
                 {clientData.name.charAt(0)}
               </div>
               <div>
@@ -90,7 +90,7 @@ export default function ClientDetail() {
               <Download className="w-4 h-4" />
               Export Report
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors">
               <Share className="w-4 h-4" />
               Share Growth Report
             </button>
@@ -100,17 +100,17 @@ export default function ClientDetail() {
 
       <div className="p-8">
         {/* Growth Summary */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white mb-8">
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 text-white mb-8">
           <h2 className="text-lg font-semibold mb-4">Growth Summary</h2>
           <div className="grid grid-cols-4 gap-6">
             {skillProgress.map((skill) => (
               <div key={skill.name} className="bg-white/10 rounded-xl p-4">
-                <div className="text-sm text-indigo-100 mb-2">{skill.name}</div>
+                <div className="text-sm text-gray-400 mb-2">{skill.name}</div>
                 <div className="flex items-end gap-2">
                   <span className="text-3xl font-bold">{skill.current}%</span>
                   <span className="text-green-300 text-sm mb-1">{skill.change}</span>
                 </div>
-                <div className="flex items-center gap-2 mt-2 text-xs text-indigo-200">
+                <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
                   <span>Started at {skill.start}%</span>
                 </div>
               </div>
@@ -129,8 +129,8 @@ export default function ClientDetail() {
                   <XAxis dataKey="session" tick={{ fontSize: 12 }} label={{ value: 'Session', position: 'bottom', offset: -5 }} />
                   <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="selfAwareness" stroke="#6366f1" strokeWidth={2} name="Self Awareness" />
-                  <Line type="monotone" dataKey="goalClarity" stroke="#8b5cf6" strokeWidth={2} name="Goal Clarity" />
+                  <Line type="monotone" dataKey="selfAwareness" stroke="#0d9488" strokeWidth={2} name="Self Awareness" />
+                  <Line type="monotone" dataKey="goalClarity" stroke="#374151" strokeWidth={2} name="Goal Clarity" />
                   <Line type="monotone" dataKey="actionTaking" stroke="#ec4899" strokeWidth={2} name="Action Taking" />
                   <Line type="monotone" dataKey="emotionManagement" stroke="#10b981" strokeWidth={2} name="Emotion Mgmt" />
                 </LineChart>
@@ -138,11 +138,11 @@ export default function ClientDetail() {
             </div>
             <div className="flex justify-center gap-6 mt-4 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-teal-500 rounded-full"></div>
                 <span className="text-gray-600">Self Awareness</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
                 <span className="text-gray-600">Goal Clarity</span>
               </div>
               <div className="flex items-center gap-2">
@@ -189,7 +189,7 @@ export default function ClientDetail() {
                   <div className="flex gap-3">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                       idx === topicEvolution.length - 1
-                        ? 'bg-indigo-500 text-white'
+                        ? 'bg-teal-500 text-white'
                         : 'bg-gray-200 text-gray-600'
                     }`}>
                       <div className="w-2 h-2 bg-current rounded-full"></div>
@@ -208,7 +208,7 @@ export default function ClientDetail() {
           <div className="col-span-2 bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-900">Session History</h3>
-              <button className="text-indigo-600 text-sm font-medium hover:text-indigo-700">View All</button>
+              <button className="text-teal-600 text-sm font-medium hover:text-teal-700">View All</button>
             </div>
             <div className="space-y-3">
               {sessions.map((session) => (
@@ -217,8 +217,8 @@ export default function ClientDetail() {
                   onClick={() => navigate('/review/session')}
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors"
                 >
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-gray-600" />
                   </div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-900">{session.topic}</div>
@@ -240,13 +240,13 @@ export default function ClientDetail() {
         </div>
 
         {/* Shareable Report Preview */}
-        <div className="mt-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
+        <div className="mt-8 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">Generate Client Growth Report</h3>
               <p className="text-sm text-gray-600">Create a shareable PDF report showing {clientData.name}'s progress and breakthroughs.</p>
             </div>
-            <button className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors">
+            <button className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition-colors">
               <Share className="w-5 h-5" />
               Generate & Share
             </button>
