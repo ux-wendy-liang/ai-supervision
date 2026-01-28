@@ -1,204 +1,535 @@
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Target, MessageSquare, TrendingUp, Users, Award } from 'lucide-react';
+import {
+  Sparkles,
+  Search,
+  Calendar,
+  Star,
+  TrendingUp,
+  Users,
+  Award,
+  MessageSquare,
+  Target,
+  ArrowRight,
+  Check,
+  Zap,
+  Shield,
+  Clock
+} from 'lucide-react';
+import { coaches } from '../data/coaches';
 
 export default function Landing() {
   const navigate = useNavigate();
+  const featuredCoaches = coaches.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="px-6 py-4 flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-bold text-gray-900">AI Coach Mentor</span>
+          <span className="text-xl font-bold text-gray-900">CoachSpace</span>
         </div>
-        <button
-          onClick={() => navigate('/login')}
-          className="px-4 py-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
-        >
-          Login
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate('/coaches')}
+            className="text-gray-600 hover:text-gray-900 font-medium"
+          >
+            Find a Coach
+          </button>
+          <button
+            onClick={() => navigate('/login')}
+            className="text-gray-600 hover:text-gray-900 font-medium"
+          >
+            Log in
+          </button>
+          <button
+            onClick={() => navigate('/coach/register')}
+            className="px-4 py-2 bg-teal-600 text-white font-medium rounded-xl hover:bg-teal-700 transition-colors"
+          >
+            Join as Coach
+          </button>
+        </div>
       </header>
 
-      {/* Hero */}
-      <section className="px-6 py-20 max-w-7xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-          <Sparkles className="w-4 h-4" />
-          AI-Powered Coaching Practice
-        </div>
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-          Become a Better Coach<br />
-          <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
-            With AI Practice & Feedback
-          </span>
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Practice coaching conversations with AI clients, get real-time feedback based on ICF standards, and track your professional growth.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="px-8 py-4 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-teal-500/30 transition-all"
-          >
-            Start Free Trial
-          </button>
-          <button className="px-8 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-teal-300 hover:bg-teal-50 transition-all">
-            Watch Demo
-          </button>
-        </div>
-      </section>
+      {/* Hero - Problem-focused */}
+      <section className="px-6 py-20 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Feeling Stuck?<br />
+              <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                Find Your Coach.
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Connect with certified coaches who specialize in career transitions,
+              leadership, and personal growth. Book your first session in minutes.
+            </p>
 
-      {/* Features */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Two Powerful Features</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Feature 1 */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg shadow-teal-500/5 border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center mb-6">
-              <MessageSquare className="w-7 h-7 text-white" />
+            {/* Quick Search */}
+            <div className="flex gap-3 mb-6">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="What are you looking for? (e.g., career coaching)"
+                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-teal-500 text-lg"
+                  onKeyDown={(e) => e.key === 'Enter' && navigate('/coaches')}
+                />
+              </div>
+              <button
+                onClick={() => navigate('/coaches')}
+                className="px-8 py-4 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors"
+              >
+                Search
+              </button>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Simulate Practice</h3>
-            <p className="text-gray-600 mb-6">Practice with AI clients featuring various personas and challenges. Get real-time feedback and detailed reports after each session.</p>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                8+ Client Personas
-              </li>
-              <li className="flex items-center gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                Real-time Coaching Tips
-              </li>
-              <li className="flex items-center gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                ICF-Based Assessment
-              </li>
-            </ul>
+
+            {/* Popular searches */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm text-gray-500">Popular:</span>
+              {['Career Coaching', 'Leadership', 'Life Balance', 'Executive'].map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => navigate('/coaches')}
+                  className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Feature 2 */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg shadow-emerald-500/5 border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
-              <Target className="w-7 h-7 text-white" />
+          {/* Featured Coaches Preview */}
+          <div className="relative">
+            <div className="absolute -inset-4 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-3xl blur-2xl opacity-60" />
+            <div className="relative bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+              <div className="text-sm font-medium text-gray-500 mb-4">Featured Coaches</div>
+              <div className="space-y-4">
+                {featuredCoaches.map(coach => (
+                  <div
+                    key={coach.id}
+                    onClick={() => navigate(`/coaches/${coach.id}`)}
+                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors"
+                  >
+                    <img
+                      src={coach.avatar}
+                      alt={coach.name}
+                      className="w-14 h-14 rounded-xl object-cover"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">{coach.name}</div>
+                      <div className="text-sm text-gray-500">{coach.title}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-1 text-sm">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <span className="font-medium">{coach.rating}</span>
+                      </div>
+                      <div className="text-sm text-gray-500">${coach.pricePerSession}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => navigate('/coaches')}
+                className="w-full mt-4 py-3 text-teal-600 font-medium hover:bg-teal-50 rounded-xl transition-colors flex items-center justify-center gap-2"
+              >
+                View All Coaches
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Session Review</h3>
-            <p className="text-gray-600 mb-6">Upload your real coaching sessions. Get AI-generated notes, inline feedback, and track your client's growth journey.</p>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                Auto Transcription
-              </li>
-              <li className="flex items-center gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                Inline AI Feedback
-              </li>
-              <li className="flex items-center gap-3 text-gray-700">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                Client Growth Tracking
-              </li>
-            </ul>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="px-6 py-16 bg-gradient-to-r from-teal-600 to-emerald-600">
+      {/* Social Proof Stats */}
+      <section className="px-6 py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <div className="text-4xl font-bold text-white mb-2">$150+</div>
-            <div className="text-teal-100">Saved per Hour vs Real Supervisor</div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">500+</div>
+            <div className="text-gray-600">Verified Coaches</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-white mb-2">24/7</div>
-            <div className="text-teal-100">Available Anytime</div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">10,000+</div>
+            <div className="text-gray-600">Sessions Completed</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-white mb-2">ICF</div>
-            <div className="text-teal-100">Standard Based</div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">4.9/5</div>
+            <div className="text-gray-600">Average Rating</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-white mb-2">100%</div>
-            <div className="text-teal-100">Private & Safe</div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">24hr</div>
+            <div className="text-gray-600">Response Time</div>
           </div>
         </div>
       </section>
 
-      {/* User Types */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">Who Is This For?</h2>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Whether you're exploring coaching or advancing your career, we have you covered.</p>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl p-6 border border-gray-100 hover:border-gray-300 transition-colors">
-            <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-4">
-              <Users className="w-6 h-6 text-amber-600" />
+      {/* How It Works */}
+      <section className="px-6 py-20 max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Start Your Journey in 3 Steps</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Finding the right coach shouldn't be complicated. Here's how it works.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-6 relative">
+              <Search className="w-8 h-8 text-teal-600" />
+              <span className="absolute -top-2 -right-2 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
             </div>
-            <h3 className="font-bold text-gray-900 mb-2">Exploring Coaching?</h3>
-            <p className="text-gray-600 text-sm">Try it free and see if coaching is right for you. Get a personalized fit assessment.</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Browse & Compare</h3>
+            <p className="text-gray-600">
+              Filter by specialty, price, and availability.
+              Read verified reviews from real clients.
+            </p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-100 hover:border-gray-300 transition-colors">
-            <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
-              <TrendingUp className="w-6 h-6 text-teal-600" />
+
+          <div className="text-center">
+            <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-6 relative">
+              <Calendar className="w-8 h-8 text-teal-600" />
+              <span className="absolute -top-2 -right-2 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
             </div>
-            <h3 className="font-bold text-gray-900 mb-2">In Training?</h3>
-            <p className="text-gray-600 text-sm">Practice anytime without scheduling. Prepare for ICF certification with confidence.</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Book Instantly</h3>
+            <p className="text-gray-600">
+              Pick a time that works for you.
+              Get instant confirmation and calendar invite.
+            </p>
           </div>
-          <div className="bg-white rounded-xl p-6 border border-gray-100 hover:border-gray-300 transition-colors">
-            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-              <Award className="w-6 h-6 text-gray-600" />
+
+          <div className="text-center">
+            <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-6 relative">
+              <TrendingUp className="w-8 h-8 text-teal-600" />
+              <span className="absolute -top-2 -right-2 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
             </div>
-            <h3 className="font-bold text-gray-900 mb-2">ACC/PCC Coach?</h3>
-            <p className="text-gray-600 text-sm">Review real sessions, track client growth, and continue improving your craft.</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Grow Together</h3>
+            <p className="text-gray-600">
+              Work with your coach to unlock your potential
+              and achieve your goals.
+            </p>
           </div>
         </div>
-      </section>
 
-      {/* CTA */}
-      <section className="px-6 py-16 max-w-7xl mx-auto text-center">
-        <div className="bg-gray-900 rounded-3xl p-12">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Level Up Your Coaching?</h2>
-          <p className="text-gray-400 mb-8 max-w-xl mx-auto">Start with 3 free practice sessions per month. No credit card required.</p>
+        <div className="text-center mt-12">
           <button
-            onClick={() => navigate('/dashboard')}
-            className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl hover:shadow-lg transition-all"
+            onClick={() => navigate('/coaches')}
+            className="px-8 py-4 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors inline-flex items-center gap-2"
           >
-            Get Started Free
+            Find Your Coach Now
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="px-6 py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose CoachSpace?</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-teal-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Verified Coaches</h3>
+              <p className="text-gray-600">
+                Every coach is vetted for credentials, experience, and client reviews.
+                ICF certified coaches only.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-teal-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">AI-Enhanced Quality</h3>
+              <p className="text-gray-600">
+                Our coaches use AI tools to continuously improve their skills,
+                giving you better sessions every time.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mb-4">
+                <Clock className="w-6 h-6 text-teal-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Flexible Booking</h3>
+              <p className="text-gray-600">
+                Book online or in-person sessions. Free cancellation up to 24 hours.
+                Sessions as short as 30 minutes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="px-6 py-20 max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Clients Say</h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-1 mb-4">
+              {[1, 2, 3, 4, 5].map(i => (
+                <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+              ))}
+            </div>
+            <p className="text-gray-600 mb-6">
+              "Found my career coach through CoachSpace and landed my dream job within 3 months.
+              The booking process was seamless."
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                <span className="text-teal-600 font-medium">MT</span>
+              </div>
+              <div>
+                <div className="font-medium text-gray-900">Michael T.</div>
+                <div className="text-sm text-gray-500">Product Manager at Google</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-1 mb-4">
+              {[1, 2, 3, 4, 5].map(i => (
+                <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+              ))}
+            </div>
+            <p className="text-gray-600 mb-6">
+              "As a coach, CoachSpace has transformed my practice. I no longer spend hours on marketing -
+              qualified clients find me."
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-purple-600 font-medium">SL</span>
+              </div>
+              <div>
+                <div className="font-medium text-gray-900">Sarah L.</div>
+                <div className="text-sm text-gray-500">ICF PCC, Executive Coach</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-1 mb-4">
+              {[1, 2, 3, 4, 5].map(i => (
+                <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+              ))}
+            </div>
+            <p className="text-gray-600 mb-6">
+              "The quality of coaches is outstanding. I love reading reviews and seeing credentials
+              before booking. Highly recommend!"
+            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <span className="text-orange-600 font-medium">JK</span>
+              </div>
+              <div>
+                <div className="font-medium text-gray-900">Jennifer K.</div>
+                <div className="text-sm text-gray-500">Startup Founder</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* For Coaches Section */}
+      <section className="px-6 py-20 bg-gradient-to-br from-gray-900 to-gray-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Users className="w-4 h-4" />
+                For Coaches
+              </div>
+              <h2 className="text-4xl font-bold text-white mb-6">
+                Grow Your Practice.<br />
+                <span className="text-teal-400">Let Clients Find You.</span>
+              </h2>
+              <p className="text-gray-300 text-lg mb-8">
+                Stop chasing clients. Join CoachSpace and let qualified clients come to you.
+                Plus, our AI Supervision tools help you continuously improve.
+              </p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-white">Get discovered by clients</div>
+                    <div className="text-gray-400 text-sm">SEO-optimized profiles bring clients to you</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-white">Easy booking & scheduling</div>
+                    <div className="text-gray-400 text-sm">Built-in calendar, reminders, and payments</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-white">AI-powered supervision</div>
+                    <div className="text-gray-400 text-sm">Get feedback on real sessions, track your growth</div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/coach/register')}
+                className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl hover:shadow-lg transition-all"
+              >
+                Join as a Coach - It's Free
+              </button>
+            </div>
+
+            {/* AI Supervision Preview */}
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <div className="font-semibold text-white">AI Supervision</div>
+                  <div className="text-sm text-gray-400">Exclusive to CoachSpace coaches</div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-white/10 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare className="w-4 h-4 text-teal-400" />
+                    <span className="text-sm font-medium text-white">Real-time Feedback</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">
+                    "Great use of powerful questions! Consider giving more space after reflections."
+                  </p>
+                </div>
+
+                <div className="bg-white/10 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-4 h-4 text-teal-400" />
+                    <span className="text-sm font-medium text-white">ICF Competency Scores</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 bg-white/10 rounded-full h-2">
+                      <div className="bg-teal-500 h-2 rounded-full" style={{ width: '85%' }} />
+                    </div>
+                    <span className="text-teal-400 font-medium">85/100</span>
+                  </div>
+                </div>
+
+                <div className="bg-white/10 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="w-4 h-4 text-teal-400" />
+                    <span className="text-sm font-medium text-white">Track Your Growth</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">
+                    Your active listening scores improved 15% this month!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Specialties */}
+      <section className="px-6 py-20 max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Find Coaches For Any Goal</h2>
+          <p className="text-gray-600">Browse coaches across 50+ specialties</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { name: 'Executive Coaching', icon: Award, color: 'bg-purple-100 text-purple-600' },
+            { name: 'Career Transition', icon: TrendingUp, color: 'bg-blue-100 text-blue-600' },
+            { name: 'Leadership', icon: Users, color: 'bg-orange-100 text-orange-600' },
+            { name: 'Life Balance', icon: Target, color: 'bg-green-100 text-green-600' },
+            { name: 'Entrepreneurship', icon: Zap, color: 'bg-yellow-100 text-yellow-600' },
+            { name: 'Communication', icon: MessageSquare, color: 'bg-pink-100 text-pink-600' },
+            { name: 'Health & Wellness', icon: Star, color: 'bg-red-100 text-red-600' },
+            { name: 'New Managers', icon: Users, color: 'bg-indigo-100 text-indigo-600' },
+          ].map(specialty => (
+            <button
+              key={specialty.name}
+              onClick={() => navigate('/coaches')}
+              className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all text-left"
+            >
+              <div className={`w-10 h-10 ${specialty.color} rounded-xl flex items-center justify-center`}>
+                <specialty.icon className="w-5 h-5" />
+              </div>
+              <span className="font-medium text-gray-900">{specialty.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="text-center mt-8">
+          <button
+            onClick={() => navigate('/coaches')}
+            className="text-teal-600 font-medium hover:text-teal-700 flex items-center gap-2 mx-auto"
+          >
+            View all specialties
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="px-6 py-20 max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-teal-600 to-emerald-600 rounded-3xl p-12 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to Unlock Your Potential?
+          </h2>
+          <p className="text-teal-100 mb-8 max-w-xl mx-auto">
+            Join thousands of professionals who found their perfect coach on CoachSpace.
+            Your first step starts here.
+          </p>
+          <button
+            onClick={() => navigate('/coaches')}
+            className="px-8 py-4 bg-white text-teal-600 font-semibold rounded-xl hover:shadow-lg transition-all inline-flex items-center gap-2"
+          >
+            Find Your Coach Now
+            <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="px-6 py-8 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto flex justify-between items-center text-gray-500 text-sm">
-          <div>© 2026 AI Coach Mentor</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-gray-700">Privacy</a>
-            <a href="#" className="hover:text-gray-700">Terms</a>
-            <a href="#" className="hover:text-gray-700">Contact</a>
+      <footer className="px-6 py-12 bg-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-white">CoachSpace</span>
+            </div>
+            <div className="flex gap-6">
+              <a href="#" className="text-gray-400 hover:text-white">About</a>
+              <a href="#" className="text-gray-400 hover:text-white">For Coaches</a>
+              <a href="#" className="text-gray-400 hover:text-white">Privacy</a>
+              <a href="#" className="text-gray-400 hover:text-white">Terms</a>
+              <a href="#" className="text-gray-400 hover:text-white">Contact</a>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+            © 2026 CoachSpace. All rights reserved.
           </div>
         </div>
       </footer>

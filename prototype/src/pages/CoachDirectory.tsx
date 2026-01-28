@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Star, MapPin, Clock, Globe, ChevronDown, X, Sparkles } from 'lucide-react';
+import { Search, Star, MapPin, Clock, Globe, ChevronDown, X, Sparkles } from 'lucide-react';
 import { coaches, allSpecialties, allCertifications, allLanguages, type Coach } from '../data/coaches';
 
 export default function CoachDirectory() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     specialty: '',
     priceRange: '' as '' | 'budget' | 'mid' | 'premium',
@@ -14,6 +13,7 @@ export default function CoachDirectory() {
     language: '',
     sessionType: '' as '' | 'online' | 'in-person'
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Filter coaches based on search and filters
   const filteredCoaches = coaches.filter(coach => {
@@ -77,6 +77,12 @@ export default function CoachDirectory() {
 
   const hasActiveFilters = Object.values(filters).some(v => v !== '');
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 300);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -102,7 +108,7 @@ export default function CoachDirectory() {
               </button>
               <button
                 onClick={() => navigate('/coach/register')}
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium"
+                className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium"
               >
                 Join as Coach
               </button>
@@ -111,19 +117,11 @@ export default function CoachDirectory() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-teal-600 to-emerald-600 text-white py-12">
+      {/* Search & Filters - Compact Bar */}
+      <div className="bg-white border-b border-gray-200 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            Find Your Perfect Coach
-          </h1>
-          <p className="text-teal-100 text-lg mb-8 max-w-2xl">
-            Browse certified coaches who can help you achieve your goals.
-            All coaches are verified and reviewed by real clients.
-          </p>
-
           {/* Search Bar */}
-          <div className="flex gap-3 max-w-2xl">
+          <form onSubmit={handleSearch} className="flex gap-3 mb-4">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -131,134 +129,130 @@ export default function CoachDirectory() {
                 placeholder="Search by name, specialty, or keyword..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
               />
             </div>
             <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`px-4 py-3 rounded-xl flex items-center gap-2 transition-colors ${
-                showFilters || hasActiveFilters
-                  ? 'bg-white text-teal-600'
-                  : 'bg-white/20 text-white hover:bg-white/30'
-              }`}
+              type="submit"
+              className="px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
             >
-              <Filter className="w-5 h-5" />
-              Filters
-              {hasActiveFilters && (
-                <span className="w-2 h-2 bg-teal-600 rounded-full" />
-              )}
+              Search
             </button>
+          </form>
+
+          {/* Filters - Always Visible */}
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Specialty */}
+            <div className="relative">
+              <select
+                value={filters.specialty}
+                onChange={(e) => setFilters({ ...filters, specialty: e.target.value })}
+                className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+              >
+                <option value="">All Specialties</option>
+                {allSpecialties.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Price Range */}
+            <div className="relative">
+              <select
+                value={filters.priceRange}
+                onChange={(e) => setFilters({ ...filters, priceRange: e.target.value as typeof filters.priceRange })}
+                className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+              >
+                <option value="">Any Price</option>
+                <option value="budget">Under $150</option>
+                <option value="mid">$150 - $250</option>
+                <option value="premium">$250+</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Certification */}
+            <div className="relative">
+              <select
+                value={filters.certification}
+                onChange={(e) => setFilters({ ...filters, certification: e.target.value })}
+                className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+              >
+                <option value="">All Certifications</option>
+                {allCertifications.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Language */}
+            <div className="relative">
+              <select
+                value={filters.language}
+                onChange={(e) => setFilters({ ...filters, language: e.target.value })}
+                className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+              >
+                <option value="">Any Language</option>
+                {allLanguages.map(l => (
+                  <option key={l} value={l}>{l}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Session Type */}
+            <div className="relative">
+              <select
+                value={filters.sessionType}
+                onChange={(e) => setFilters({ ...filters, sessionType: e.target.value as typeof filters.sessionType })}
+                className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+              >
+                <option value="">Online & In-Person</option>
+                <option value="online">Online Only</option>
+                <option value="in-person">In-Person Only</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Clear Filters */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-2 px-4 py-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors text-sm"
+              >
+                <X className="w-4 h-4" />
+                Clear all
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Filters Panel */}
-      {showFilters && (
-        <div className="bg-white border-b border-gray-200 py-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap gap-4">
-              {/* Specialty */}
-              <div className="relative">
-                <select
-                  value={filters.specialty}
-                  onChange={(e) => setFilters({ ...filters, specialty: e.target.value })}
-                  className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                >
-                  <option value="">All Specialties</option>
-                  {allSpecialties.map(s => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Price Range */}
-              <div className="relative">
-                <select
-                  value={filters.priceRange}
-                  onChange={(e) => setFilters({ ...filters, priceRange: e.target.value as typeof filters.priceRange })}
-                  className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                >
-                  <option value="">Any Price</option>
-                  <option value="budget">Under $150</option>
-                  <option value="mid">$150 - $250</option>
-                  <option value="premium">$250+</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Certification */}
-              <div className="relative">
-                <select
-                  value={filters.certification}
-                  onChange={(e) => setFilters({ ...filters, certification: e.target.value })}
-                  className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                >
-                  <option value="">All Certifications</option>
-                  {allCertifications.map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Language */}
-              <div className="relative">
-                <select
-                  value={filters.language}
-                  onChange={(e) => setFilters({ ...filters, language: e.target.value })}
-                  className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                >
-                  <option value="">Any Language</option>
-                  {allLanguages.map(l => (
-                    <option key={l} value={l}>{l}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Session Type */}
-              <div className="relative">
-                <select
-                  value={filters.sessionType}
-                  onChange={(e) => setFilters({ ...filters, sessionType: e.target.value as typeof filters.sessionType })}
-                  className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                >
-                  <option value="">Online & In-Person</option>
-                  <option value="online">Online Only</option>
-                  <option value="in-person">In-Person Only</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Clear Filters */}
-              {hasActiveFilters && (
-                <button
-                  onClick={clearFilters}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                  Clear all
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600">
-            {filteredCoaches.length} coach{filteredCoaches.length !== 1 ? 'es' : ''} found
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
+                Searching...
+              </span>
+            ) : (
+              `${filteredCoaches.length} coach${filteredCoaches.length !== 1 ? 'es' : ''} found`
+            )}
           </p>
-          <select className="appearance-none px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500">
-            <option>Sort by: Recommended</option>
-            <option>Sort by: Price (Low to High)</option>
-            <option>Sort by: Price (High to Low)</option>
-            <option>Sort by: Rating</option>
-            <option>Sort by: Experience</option>
-          </select>
+          <div className="relative">
+            <select className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm">
+              <option>Sort by: Recommended</option>
+              <option>Sort by: Price (Low to High)</option>
+              <option>Sort by: Price (High to Low)</option>
+              <option>Sort by: Rating</option>
+              <option>Sort by: Experience</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
         </div>
 
         {/* Coach Cards */}
@@ -271,8 +265,8 @@ export default function CoachDirectory() {
             />
           ))}
 
-          {filteredCoaches.length === 0 && (
-            <div className="text-center py-16">
+          {filteredCoaches.length === 0 && !isLoading && (
+            <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-gray-400" />
               </div>

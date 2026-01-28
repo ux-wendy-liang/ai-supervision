@@ -117,6 +117,8 @@ export default function LiveSession() {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [showAI, setShowAI] = useState(true);
+  const [showEndConfirm, setShowEndConfirm] = useState(false);
+  const [isEnding, setIsEnding] = useState(false);
   const [visibleTranscript, setVisibleTranscript] = useState<typeof liveTranscript>([]);
   const transcriptRef = useRef<HTMLDivElement>(null);
 
@@ -161,8 +163,15 @@ export default function LiveSession() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const endSession = () => {
-    navigate('/coach/supervision/review/1');
+  const handleEndClick = () => {
+    setShowEndConfirm(true);
+  };
+
+  const confirmEndSession = () => {
+    setIsEnding(true);
+    setTimeout(() => {
+      navigate('/coach/supervision/review/1');
+    }, 1000);
   };
 
   // Calculate live stats
@@ -263,7 +272,7 @@ export default function LiveSession() {
             {isVideoOn ? <Video className="w-6 h-6" /> : <VideoOff className="w-6 h-6" />}
           </button>
           <button
-            onClick={endSession}
+            onClick={handleEndClick}
             className="w-14 h-14 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors"
           >
             <Phone className="w-6 h-6 rotate-135" />
@@ -368,6 +377,60 @@ export default function LiveSession() {
               </button>
               <button className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs hover:bg-gray-600">
                 Explore emotions
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* End Session Confirmation Modal */}
+      {showEndConfirm && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl max-w-md w-full p-6 border border-gray-700">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Phone className="w-8 h-8 text-red-500 rotate-135" />
+              </div>
+              <h2 className="text-xl font-bold text-white mb-2">End Session?</h2>
+              <p className="text-gray-400">
+                Your session has been {formatTime(sessionTime)} long.
+                The recording will be saved for review.
+              </p>
+            </div>
+
+            <div className="bg-gray-700/50 rounded-xl p-4 mb-6">
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-white">{formatTime(sessionTime)}</div>
+                  <div className="text-xs text-gray-400">Duration</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-teal-400">{positiveCount}</div>
+                  <div className="text-xs text-gray-400">Positive Feedback</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowEndConfirm(false)}
+                className="flex-1 py-3 bg-gray-700 text-white rounded-xl font-medium hover:bg-gray-600 transition-colors"
+              >
+                Continue Session
+              </button>
+              <button
+                onClick={confirmEndSession}
+                disabled={isEnding}
+                className="flex-1 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isEnding ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Ending...
+                  </>
+                ) : (
+                  'End Session'
+                )}
               </button>
             </div>
           </div>

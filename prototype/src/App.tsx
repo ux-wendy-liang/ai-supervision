@@ -1,13 +1,12 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
 import CoachLayout from './components/CoachLayout';
-import LandingNew from './pages/LandingNew';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import CoachDirectory from './pages/CoachDirectory';
 import CoachProfile from './pages/CoachProfile';
 import BookingConfirmation from './pages/BookingConfirmation';
 import CoachRegister from './pages/CoachRegister';
+import MyBookings from './pages/MyBookings';
 // Coach Portal
 import CoachDashboard from './pages/coach/CoachDashboard';
 import CoachBookings from './pages/coach/CoachBookings';
@@ -17,16 +16,8 @@ import CoachSupervision from './pages/coach/CoachSupervision';
 import SessionReview from './pages/coach/SessionReview';
 import LiveSession from './pages/coach/LiveSession';
 import LiveSessionIteration1 from './pages/coach/LiveSessionIteration1';
-// Legacy
-import Dashboard from './pages/Dashboard';
-import Practice from './pages/Practice';
-import PracticeSession from './pages/PracticeSession';
-import Report from './pages/Report';
-import Progress from './pages/Progress';
-import Review from './pages/Review';
-import ReviewSession from './pages/ReviewSession';
-import Clients from './pages/Clients';
-import ClientDetail from './pages/ClientDetail';
+
+// Case Study
 import CaseStudy from './pages/CaseStudy';
 import CaseStudyAntd from './pages/CaseStudyAntd';
 import CaseStudyMinimal from './pages/CaseStudyMinimal';
@@ -60,15 +51,13 @@ function App() {
     <HashRouter>
       <Routes>
         {/* Public routes - Coach Ecosystem */}
-        <Route path="/" element={<LandingNew />} />
+        <Route path="/" element={<Landing />} />
         <Route path="/coaches" element={<CoachDirectory />} />
         <Route path="/coaches/:id" element={<CoachProfile />} />
         <Route path="/booking-confirmation" element={<BookingConfirmation />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/coach/register" element={<CoachRegister />} />
         <Route path="/login" element={<Login />} />
-
-        {/* Legacy landing for AI Coach Mentor */}
-        <Route path="/ai-mentor" element={<Landing />} />
 
         {/* Coach Portal - with sidebar layout */}
         <Route element={<CoachLayout />}>
@@ -112,21 +101,6 @@ function App() {
         <Route path="/case-study-antd" element={<CaseStudyAntd />} />
         <Route path="/case-study-minimal" element={<CaseStudyMinimal />} />
         <Route path="/case-study-story" element={<CaseStudyStory />} />
-
-        {/* App routes with sidebar layout */}
-        <Route element={<Layout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/practice" element={<Practice />} />
-          <Route path="/progress" element={<Progress />} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/clients" element={<Clients />} />
-          <Route path="/clients/:id" element={<ClientDetail />} />
-        </Route>
-
-        {/* Full screen routes */}
-        <Route path="/practice/session" element={<PracticeSession />} />
-        <Route path="/report" element={<Report />} />
-        <Route path="/review/session" element={<ReviewSession />} />
       </Routes>
     </HashRouter>
   );

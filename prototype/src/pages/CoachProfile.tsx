@@ -15,26 +15,34 @@ import {
   Sparkles,
   Award,
   MessageCircle,
-  ThumbsUp
+  ThumbsUp,
+  AlertCircle,
+  Edit3
 } from 'lucide-react';
 import { getCoachById } from '../data/coaches';
+
+type TabType = 'about' | 'reviews' | 'availability';
 
 export default function CoachProfile() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const coach = getCoachById(id || '');
 
+  const [activeTab, setActiveTab] = useState<TabType>('about');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [currentWeekStart, setCurrentWeekStart] = useState(() => {
-    const today = new Date();
-    return new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Monday
-  });
+  const [currentMonth, setCurrentMonth] = useState(() => new Date());
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [clientInfo, setClientInfo] = useState({
     name: '',
     email: '',
     phone: '',
+    reason: ''
+  });
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
     reason: ''
   });
 
@@ -42,7 +50,11 @@ export default function CoachProfile() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Users className="w-8 h-8 text-gray-400" />
+          </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Coach not found</h2>
+          <p className="text-gray-600 mb-4">This coach profile doesn't exist or has been removed.</p>
           <button
             onClick={() => navigate('/coaches')}
             className="text-teal-600 hover:text-teal-700 font-medium"
@@ -54,30 +66,75 @@ export default function CoachProfile() {
     );
   }
 
-  // Generate week dates
-  const weekDates = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(currentWeekStart);
-    date.setDate(currentWeekStart.getDate() + i);
-    return date;
-  });
+  // Generate calendar days for current month
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const days: (Date | null)[] = [];
 
+    // Add empty days for alignment
+    const startPadding = (firstDay.getDay() + 6) % 7; // Monday = 0
+    for (let i = 0; i < startPadding; i++) {
+      days.push(null);
+    }
+
+    // Add actual days
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push(new Date(year, month, i));
+    }
+
+    return days;
+  };
+
+  const calendarDays = getDaysInMonth(currentMonth);
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const getAvailableTimesForDate = (dateStr: string) => {
     const slot = coach.availableSlots.find(s => s.date === dateStr);
     return slot?.times || [];
   };
 
-  const goToPreviousWeek = () => {
-    const newStart = new Date(currentWeekStart);
-    newStart.setDate(newStart.getDate() - 7);
-    setCurrentWeekStart(newStart);
+  const goToPreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
   };
 
-  const goToNextWeek = () => {
-    const newStart = new Date(currentWeekStart);
-    newStart.setDate(newStart.getDate() + 7);
-    setCurrentWeekStart(newStart);
+  const goToNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const validateForm = () => {
+    const newErrors = { name: '', email: '', reason: '' };
+    let isValid = true;
+
+    if (!clientInfo.name.trim()) {
+      newErrors.name = 'Name is required';
+      isValid = false;
+    }
+
+    if (!clientInfo.email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!validateEmail(clientInfo.email)) {
+      newErrors.email = 'Please enter a valid email';
+      isValid = false;
+    }
+
+    if (!clientInfo.reason.trim()) {
+      newErrors.reason = 'Please tell us what you want to discuss';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleBookSession = () => {
@@ -85,23 +142,41 @@ export default function CoachProfile() {
   };
 
   const confirmBooking = () => {
-    // In a real app, this would send to backend
-    navigate('/booking-confirmation', {
-      state: {
-        coach: {
-          id: coach.id,
-          name: coach.name,
-          title: coach.title,
-          avatar: coach.avatar,
-          pricePerSession: coach.pricePerSession,
-          sessionDuration: coach.sessionDuration
-        },
-        date: selectedDate,
-        time: selectedTime,
-        client: clientInfo
-      }
-    });
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate('/booking-confirmation', {
+        state: {
+          coach: {
+            id: coach.id,
+            name: coach.name,
+            title: coach.title,
+            avatar: coach.avatar,
+            pricePerSession: coach.pricePerSession,
+            sessionDuration: coach.sessionDuration
+          },
+          date: selectedDate,
+          time: selectedTime,
+          client: clientInfo
+        }
+      });
+    }, 1000);
   };
+
+  const editDateTime = () => {
+    setShowBookingModal(false);
+    setActiveTab('availability');
+    // Scroll to calendar
+    document.getElementById('availability-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const tabs = [
+    { id: 'about' as const, label: 'About' },
+    { id: 'reviews' as const, label: `Reviews (${coach.reviewCount})` },
+    { id: 'availability' as const, label: 'Availability' }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -112,7 +187,7 @@ export default function CoachProfile() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/coaches')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
               </button>
@@ -120,7 +195,7 @@ export default function CoachProfile() {
                 onClick={() => navigate('/')}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center">
                   <Sparkles className="w-4 h-4 text-white" />
                 </div>
                 <span className="font-bold text-gray-900">CoachSpace</span>
@@ -136,7 +211,7 @@ export default function CoachProfile() {
               </button>
               <button
                 onClick={() => navigate('/coach/register')}
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium"
+                className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium"
               >
                 Join as Coach
               </button>
@@ -148,14 +223,14 @@ export default function CoachProfile() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             {/* Profile Header */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
               <div className="flex gap-6">
                 <img
                   src={coach.avatar}
                   alt={coach.name}
-                  className="w-32 h-32 rounded-2xl object-cover"
+                  className="w-28 h-28 rounded-2xl object-cover"
                 />
                 <div className="flex-1">
                   <h1 className="text-2xl font-bold text-gray-900">{coach.name}</h1>
@@ -174,7 +249,7 @@ export default function CoachProfile() {
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {coach.yearsExperience} years experience
+                      {coach.yearsExperience} years
                     </div>
                     <div className="flex items-center gap-1">
                       <Globe className="w-4 h-4" />
@@ -197,121 +272,271 @@ export default function CoachProfile() {
               </div>
             </div>
 
-            {/* Specialties */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Specialties</h2>
-              <div className="flex flex-wrap gap-2">
-                {coach.specialties.map(specialty => (
-                  <span
-                    key={specialty}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full"
+            {/* Tab Navigation */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="flex border-b border-gray-100">
+                {tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 py-4 text-center font-medium transition-colors ${
+                      activeTab === tab.id
+                        ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50/50'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
                   >
-                    {specialty}
-                  </span>
+                    {tab.label}
+                  </button>
                 ))}
               </div>
-            </div>
 
-            {/* About */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">About</h2>
-              <div className="prose prose-gray max-w-none">
-                {coach.bio.split('\n\n').map((paragraph, i) => (
-                  <p key={i} className="text-gray-600 mb-4 last:mb-0">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            {/* Coaching Approach */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Coaching Approach</h2>
-              <div className="prose prose-gray max-w-none">
-                {coach.approach.split('\n\n').map((paragraph, i) => (
-                  <p key={i} className="text-gray-600 mb-4 last:mb-0">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            {/* Session Info */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Session Details</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                  <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-teal-600" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-900">{coach.sessionDuration} minutes</div>
-                    <div className="text-sm text-gray-500">Session length</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                  <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <Video className="w-5 h-5 text-teal-600" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-900">
-                      {coach.sessionTypes.includes('online') && coach.sessionTypes.includes('in-person')
-                        ? 'Online & In-Person'
-                        : coach.sessionTypes.includes('online')
-                        ? 'Online Only'
-                        : 'In-Person Only'}
-                    </div>
-                    <div className="text-sm text-gray-500">Session format</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Reviews */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Reviews ({coach.reviewCount})
-                </h2>
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                  <span className="text-xl font-bold text-gray-900">{coach.rating}</span>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                {coach.reviews.map(review => (
-                  <div key={review.id} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                          <Users className="w-5 h-5 text-gray-500" />
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{review.clientName}</div>
-                          <div className="text-sm text-gray-500">{review.date}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < review.rating
-                                ? 'text-yellow-500 fill-current'
-                                : 'text-gray-300'
-                            }`}
-                          />
+              <div className="p-6">
+                {/* About Tab */}
+                {activeTab === 'about' && (
+                  <div className="space-y-8">
+                    {/* Specialties */}
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900 mb-4">Specialties</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {coach.specialties.map(specialty => (
+                          <span
+                            key={specialty}
+                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full"
+                          >
+                            {specialty}
+                          </span>
                         ))}
                       </div>
                     </div>
-                    <p className="text-gray-600">{review.comment}</p>
-                    <button className="flex items-center gap-2 mt-3 text-sm text-gray-500 hover:text-gray-700">
-                      <ThumbsUp className="w-4 h-4" />
-                      Helpful ({review.helpful})
-                    </button>
+
+                    {/* About */}
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900 mb-4">About</h2>
+                      <div className="prose prose-gray max-w-none">
+                        {coach.bio.split('\n\n').map((paragraph, i) => (
+                          <p key={i} className="text-gray-600 mb-4 last:mb-0">
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Coaching Approach */}
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900 mb-4">Coaching Approach</h2>
+                      <div className="prose prose-gray max-w-none">
+                        {coach.approach.split('\n\n').map((paragraph, i) => (
+                          <p key={i} className="text-gray-600 mb-4 last:mb-0">
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Session Info */}
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900 mb-4">Session Details</h2>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                          <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                            <Clock className="w-5 h-5 text-teal-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-900">{coach.sessionDuration} minutes</div>
+                            <div className="text-sm text-gray-500">Session length</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                          <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                            <Video className="w-5 h-5 text-teal-600" />
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              {coach.sessionTypes.includes('online') && coach.sessionTypes.includes('in-person')
+                                ? 'Online & In-Person'
+                                : coach.sessionTypes.includes('online')
+                                ? 'Online Only'
+                                : 'In-Person Only'}
+                            </div>
+                            <div className="text-sm text-gray-500">Session format</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                ))}
+                )}
+
+                {/* Reviews Tab */}
+                {activeTab === 'reviews' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="text-4xl font-bold text-gray-900">{coach.rating}</div>
+                        <div>
+                          <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map(i => (
+                              <Star
+                                key={i}
+                                className={`w-5 h-5 ${
+                                  i <= Math.round(coach.rating)
+                                    ? 'text-yellow-500 fill-current'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <div className="text-sm text-gray-500">{coach.reviewCount} reviews</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {coach.reviews.length > 0 ? (
+                      <div className="space-y-6">
+                        {coach.reviews.map(review => (
+                          <div key={review.id} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                  <Users className="w-5 h-5 text-gray-500" />
+                                </div>
+                                <div>
+                                  <div className="font-medium text-gray-900">{review.clientName}</div>
+                                  <div className="text-sm text-gray-500">{review.date}</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`w-4 h-4 ${
+                                      i < review.rating
+                                        ? 'text-yellow-500 fill-current'
+                                        : 'text-gray-300'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                            <p className="text-gray-600">{review.comment}</p>
+                            <button className="flex items-center gap-2 mt-3 text-sm text-gray-500 hover:text-gray-700">
+                              <ThumbsUp className="w-4 h-4" />
+                              Helpful ({review.helpful})
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No reviews yet</h3>
+                        <p className="text-gray-600">Be the first to book a session with {coach.name}!</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Availability Tab */}
+                {activeTab === 'availability' && (
+                  <div id="availability-section">
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-lg font-semibold text-gray-900">
+                        {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      </h2>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={goToPreviousMonth}
+                          className="p-2 hover:bg-gray-100 rounded-xl"
+                        >
+                          <ChevronLeft className="w-5 h-5 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={goToNextMonth}
+                          className="p-2 hover:bg-gray-100 rounded-xl"
+                        >
+                          <ChevronRight className="w-5 h-5 text-gray-600" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Calendar Grid */}
+                    <div className="grid grid-cols-7 gap-1 mb-6">
+                      {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                        <div key={day} className="text-center text-sm text-gray-500 py-2 font-medium">
+                          {day}
+                        </div>
+                      ))}
+                      {calendarDays.map((date, i) => {
+                        if (!date) {
+                          return <div key={`empty-${i}`} className="aspect-square" />;
+                        }
+                        const dateStr = formatDate(date);
+                        const isToday = formatDate(new Date()) === dateStr;
+                        const isPast = date < today;
+                        const hasSlots = getAvailableTimesForDate(dateStr).length > 0;
+                        const isSelected = selectedDate === dateStr;
+
+                        return (
+                          <button
+                            key={dateStr}
+                            onClick={() => {
+                              if (!isPast && hasSlots) {
+                                setSelectedDate(dateStr);
+                                setSelectedTime(null);
+                              }
+                            }}
+                            disabled={isPast || !hasSlots}
+                            className={`
+                              aspect-square rounded-xl text-sm font-medium transition-all flex items-center justify-center
+                              ${isPast || !hasSlots
+                                ? 'text-gray-300 cursor-not-allowed'
+                                : isSelected
+                                ? 'bg-teal-600 text-white shadow-md'
+                                : 'hover:bg-teal-50 text-gray-900'
+                              }
+                              ${isToday && !isSelected ? 'ring-2 ring-teal-600 ring-inset' : ''}
+                              ${hasSlots && !isPast && !isSelected ? 'bg-teal-50/50' : ''}
+                            `}
+                          >
+                            {date.getDate()}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Time Slots */}
+                    {selectedDate && (
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-3">
+                          Available times on {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+                        </h3>
+                        <div className="grid grid-cols-4 gap-2">
+                          {getAvailableTimesForDate(selectedDate).map(time => (
+                            <button
+                              key={time}
+                              onClick={() => setSelectedTime(time)}
+                              className={`
+                                py-3 px-4 rounded-xl text-sm font-medium transition-all
+                                ${selectedTime === time
+                                  ? 'bg-teal-600 text-white shadow-md'
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }
+                              `}
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {!selectedDate && (
+                      <div className="text-center py-8 text-gray-500">
+                        <Calendar className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+                        Select a date to see available times
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -326,90 +551,22 @@ export default function CoachProfile() {
                 </div>
               </div>
 
-              {/* Calendar */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900">Select a Date</h3>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={goToPreviousWeek}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
-                      <ChevronLeft className="w-5 h-5 text-gray-600" />
-                    </button>
-                    <button
-                      onClick={goToNextWeek}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
-                      <ChevronRight className="w-5 h-5 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-7 gap-1 mb-2">
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                    <div key={day} className="text-center text-xs text-gray-500 py-1">
-                      {day}
+              {/* Selected DateTime Summary */}
+              {selectedDate && selectedTime && (
+                <div className="bg-teal-50 rounded-xl p-4 mb-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">Selected</div>
+                      <div className="font-medium text-gray-900">
+                        {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {selectedTime}
+                      </div>
                     </div>
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-7 gap-1">
-                  {weekDates.map(date => {
-                    const dateStr = formatDate(date);
-                    const isToday = formatDate(new Date()) === dateStr;
-                    const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
-                    const hasSlots = getAvailableTimesForDate(dateStr).length > 0;
-                    const isSelected = selectedDate === dateStr;
-
-                    return (
-                      <button
-                        key={dateStr}
-                        onClick={() => {
-                          if (!isPast && hasSlots) {
-                            setSelectedDate(dateStr);
-                            setSelectedTime(null);
-                          }
-                        }}
-                        disabled={isPast || !hasSlots}
-                        className={`
-                          aspect-square rounded-lg text-sm font-medium transition-colors
-                          ${isPast || !hasSlots
-                            ? 'text-gray-300 cursor-not-allowed'
-                            : isSelected
-                            ? 'bg-teal-600 text-white'
-                            : 'hover:bg-teal-50 text-gray-900'
-                          }
-                          ${isToday && !isSelected ? 'ring-2 ring-teal-600 ring-inset' : ''}
-                        `}
-                      >
-                        {date.getDate()}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Time Slots */}
-              {selectedDate && (
-                <div className="mb-6">
-                  <h3 className="font-semibold text-gray-900 mb-3">Select a Time</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {getAvailableTimesForDate(selectedDate).map(time => (
-                      <button
-                        key={time}
-                        onClick={() => setSelectedTime(time)}
-                        className={`
-                          py-2 px-3 rounded-lg text-sm font-medium transition-colors
-                          ${selectedTime === time
-                            ? 'bg-teal-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }
-                        `}
-                      >
-                        {time}
-                      </button>
-                    ))}
+                    <button
+                      onClick={() => setActiveTab('availability')}
+                      className="text-teal-600 hover:text-teal-700"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               )}
@@ -419,16 +576,25 @@ export default function CoachProfile() {
                 onClick={handleBookSession}
                 disabled={!selectedDate || !selectedTime}
                 className={`
-                  w-full py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2
+                  w-full py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2
                   ${selectedDate && selectedTime
-                    ? 'bg-teal-600 text-white hover:bg-teal-700'
+                    ? 'bg-teal-600 text-white hover:bg-teal-700 shadow-lg shadow-teal-500/20'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }
                 `}
               >
                 <Calendar className="w-5 h-5" />
-                Book Session
+                {selectedDate && selectedTime ? 'Book This Session' : 'Select Date & Time'}
               </button>
+
+              {!selectedDate && (
+                <button
+                  onClick={() => setActiveTab('availability')}
+                  className="w-full mt-3 text-teal-600 hover:text-teal-700 text-sm font-medium"
+                >
+                  View availability calendar
+                </button>
+              )}
 
               {/* Quick Info */}
               <div className="mt-6 pt-6 border-t border-gray-100 space-y-3">
@@ -446,13 +612,13 @@ export default function CoachProfile() {
         </div>
       </div>
 
-      {/* Booking Confirmation Modal */}
+      {/* Booking Modal */}
       {showBookingModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Complete Your Booking</h2>
 
-            {/* Session Summary */}
+            {/* Session Summary with Edit Option */}
             <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl mb-6">
               <img
                 src={coach.avatar}
@@ -469,10 +635,13 @@ export default function CoachProfile() {
                   })} at {selectedTime}
                 </div>
               </div>
-              <div className="text-right">
-                <div className="font-bold text-gray-900">${coach.pricePerSession}</div>
-                <div className="text-xs text-gray-500">{coach.sessionDuration} min</div>
-              </div>
+              <button
+                onClick={editDateTime}
+                className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                title="Change date/time"
+              >
+                <Edit3 className="w-5 h-5" />
+              </button>
             </div>
 
             {/* Client Information Form */}
@@ -480,25 +649,51 @@ export default function CoachProfile() {
               <h3 className="font-semibold text-gray-900">Your Information</h3>
 
               <div>
-                <label className="block text-sm text-gray-600 mb-1">Full Name *</label>
+                <label className="block text-sm text-gray-600 mb-1">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   value={clientInfo.name}
-                  onChange={(e) => setClientInfo({ ...clientInfo, name: e.target.value })}
-                  placeholder="Enter your full name"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  onChange={(e) => {
+                    setClientInfo({ ...clientInfo, name: e.target.value });
+                    if (errors.name) setErrors({ ...errors, name: '' });
+                  }}
+                  placeholder="Your full name"
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    errors.name ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm text-gray-600 mb-1">Email Address *</label>
+                <label className="block text-sm text-gray-600 mb-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
                   value={clientInfo.email}
-                  onChange={(e) => setClientInfo({ ...clientInfo, email: e.target.value })}
+                  onChange={(e) => {
+                    setClientInfo({ ...clientInfo, email: e.target.value });
+                    if (errors.email) setErrors({ ...errors, email: '' });
+                  }}
                   placeholder="you@example.com"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -508,47 +703,44 @@ export default function CoachProfile() {
                   value={clientInfo.phone}
                   onChange={(e) => setClientInfo({ ...clientInfo, phone: e.target.value })}
                   placeholder="(555) 123-4567"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-600 mb-1">What would you like to work on? *</label>
+                <label className="block text-sm text-gray-600 mb-1">
+                  What would you like to discuss? <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   value={clientInfo.reason}
-                  onChange={(e) => setClientInfo({ ...clientInfo, reason: e.target.value })}
-                  placeholder="Briefly describe what you'd like to focus on in this coaching session..."
+                  onChange={(e) => {
+                    setClientInfo({ ...clientInfo, reason: e.target.value });
+                    if (errors.reason) setErrors({ ...errors, reason: '' });
+                  }}
+                  placeholder="Briefly describe what you'd like to focus on..."
                   rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none ${
+                    errors.reason ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.reason && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {errors.reason}
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Session Details */}
+            {/* Price Summary */}
             <div className="bg-gray-50 rounded-xl p-4 mb-6">
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Date</span>
-                  <span className="font-medium text-gray-900">
-                    {selectedDate && new Date(selectedDate).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Time</span>
-                  <span className="font-medium text-gray-900">{selectedTime}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Duration</span>
-                  <span className="font-medium text-gray-900">{coach.sessionDuration} minutes</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t border-gray-200">
-                  <span className="text-gray-900 font-semibold">Total</span>
-                  <span className="font-bold text-gray-900">${coach.pricePerSession}</span>
-                </div>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600">Session ({coach.sessionDuration} min)</span>
+                <span className="text-gray-900">${coach.pricePerSession}</span>
+              </div>
+              <div className="flex justify-between font-semibold pt-2 border-t border-gray-200">
+                <span>Total</span>
+                <span>${coach.pricePerSession}</span>
               </div>
             </div>
 
@@ -561,14 +753,17 @@ export default function CoachProfile() {
               </button>
               <button
                 onClick={confirmBooking}
-                disabled={!clientInfo.name || !clientInfo.email || !clientInfo.reason}
-                className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${
-                  clientInfo.name && clientInfo.email && clientInfo.reason
-                    ? 'bg-teal-600 text-white hover:bg-teal-700'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                }`}
+                disabled={isLoading}
+                className="flex-1 py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Confirm Booking
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Booking...
+                  </>
+                ) : (
+                  'Confirm Booking'
+                )}
               </button>
             </div>
           </div>
