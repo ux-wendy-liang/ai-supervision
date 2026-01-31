@@ -1,11 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Star, MapPin, Clock, Globe, ChevronDown, X, Sparkles } from 'lucide-react';
 import { coaches, allSpecialties, allCertifications, allLanguages, type Coach } from '../data/coaches';
 
 export default function CoachDirectory() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams] = useSearchParams();
+  const initialQuery = searchParams.get('q') || '';
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [sortBy, setSortBy] = useState<'recommended' | 'price-low' | 'price-high' | 'rating' | 'experience'>('recommended');
+
+  // Update search query when URL changes
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q) setSearchQuery(q);
+  }, [searchParams]);
   const [filters, setFilters] = useState({
     specialty: '',
     priceRange: '' as '' | 'budget' | 'mid' | 'premium',
@@ -63,6 +72,23 @@ export default function CoachDirectory() {
     }
 
     return true;
+  });
+
+  // Sort coaches
+  const sortedCoaches = [...filteredCoaches].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low':
+        return a.pricePerSession - b.pricePerSession;
+      case 'price-high':
+        return b.pricePerSession - a.pricePerSession;
+      case 'rating':
+        return b.rating - a.rating;
+      case 'experience':
+        return b.yearsExperience - a.yearsExperience;
+      default:
+        // recommended: sort by rating * reviewCount (popularity weighted)
+        return (b.rating * b.reviewCount) - (a.rating * a.reviewCount);
+    }
   });
 
   const clearFilters = () => {
@@ -244,12 +270,16 @@ export default function CoachDirectory() {
             )}
           </p>
           <div className="relative">
-            <select className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm">
-              <option>Sort by: Recommended</option>
-              <option>Sort by: Price (Low to High)</option>
-              <option>Sort by: Price (High to Low)</option>
-              <option>Sort by: Rating</option>
-              <option>Sort by: Experience</option>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+            >
+              <option value="recommended">Sort by: Recommended</option>
+              <option value="price-low">Sort by: Price (Low to High)</option>
+              <option value="price-high">Sort by: Price (High to Low)</option>
+              <option value="rating">Sort by: Rating</option>
+              <option value="experience">Sort by: Experience</option>
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>
@@ -257,7 +287,7 @@ export default function CoachDirectory() {
 
         {/* Coach Cards */}
         <div className="grid gap-6">
-          {filteredCoaches.map(coach => (
+          {sortedCoaches.map(coach => (
             <CoachCard
               key={coach.id}
               coach={coach}

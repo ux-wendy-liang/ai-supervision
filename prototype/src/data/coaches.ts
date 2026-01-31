@@ -37,25 +37,36 @@ export interface Review {
   helpful: number;
 }
 
-// Generate available slots for the next 14 days
+// Generate available slots for the next 30 days
 function generateAvailableSlots(): AvailableSlot[] {
   const slots: AvailableSlot[] = [];
   const today = new Date();
 
-  for (let i = 1; i <= 14; i++) {
+  for (let i = 1; i <= 30; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
 
-    // Skip weekends for some variety
+    // Skip Sundays only
     if (date.getDay() === 0) continue;
 
     const dateStr = date.toISOString().split('T')[0];
-    const times = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00']
-      .filter(() => Math.random() > 0.3); // Random availability
 
-    if (times.length > 0) {
-      slots.push({ date: dateStr, times });
+    // Different times based on day of week for variety
+    const dayOfWeek = date.getDay();
+    let times: string[];
+
+    if (dayOfWeek === 6) {
+      // Saturday: fewer times
+      times = ['10:00', '11:00', '14:00'];
+    } else if (dayOfWeek === 1 || dayOfWeek === 3) {
+      // Monday, Wednesday: morning focus
+      times = ['09:00', '10:00', '11:00', '14:00'];
+    } else {
+      // Tuesday, Thursday, Friday: full day
+      times = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
     }
+
+    slots.push({ date: dateStr, times });
   }
 
   return slots;

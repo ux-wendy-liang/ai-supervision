@@ -20,8 +20,9 @@ import {
   Edit3
 } from 'lucide-react';
 import { getCoachById } from '../data/coaches';
+import { addBooking } from '../data/bookingStore';
 
-type TabType = 'about' | 'reviews' | 'availability';
+type TabType = 'about' | 'reviews';
 
 export default function CoachProfile() {
   const { id } = useParams<{ id: string }>();
@@ -45,6 +46,10 @@ export default function CoachProfile() {
     email: '',
     reason: ''
   });
+  const [helpfulReviews, setHelpfulReviews] = useState<Set<string>>(new Set());
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageSent, setMessageSent] = useState(false);
 
   if (!coach) {
     return (
@@ -146,9 +151,31 @@ export default function CoachProfile() {
 
     setIsLoading(true);
     setTimeout(() => {
+      // Save booking to localStorage
+      const savedBooking = addBooking({
+        coach: {
+          id: coach.id,
+          name: coach.name,
+          title: coach.title,
+          avatar: coach.avatar,
+          pricePerSession: coach.pricePerSession,
+          sessionDuration: coach.sessionDuration
+        },
+        date: selectedDate!,
+        time: selectedTime!,
+        duration: coach.sessionDuration,
+        status: 'upcoming',
+        topic: clientInfo.reason,
+        client: {
+          name: clientInfo.name,
+          email: clientInfo.email
+        }
+      });
+
       setIsLoading(false);
       navigate('/booking-confirmation', {
         state: {
+          bookingId: savedBooking.id,
           coach: {
             id: coach.id,
             name: coach.name,
@@ -167,15 +194,13 @@ export default function CoachProfile() {
 
   const editDateTime = () => {
     setShowBookingModal(false);
-    setActiveTab('availability');
-    // Scroll to calendar
-    document.getElementById('availability-section')?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to top where calendar is
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const tabs = [
     { id: 'about' as const, label: 'About' },
-    { id: 'reviews' as const, label: `Reviews (${coach.reviewCount})` },
-    { id: 'availability' as const, label: 'Availability' }
+    { id: 'reviews' as const, label: `Reviews (${coach.reviewCount})` }
   ];
 
   return (
@@ -219,6 +244,23 @@ export default function CoachProfile() {
           </div>
         </div>
       </header>
+
+      {/* Breadcrumbs */}
+      <div className="bg-gray-50 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <nav className="flex items-center gap-2 text-sm">
+            <button onClick={() => navigate('/')} className="text-gray-500 hover:text-gray-700">
+              Home
+            </button>
+            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <button onClick={() => navigate('/coaches')} className="text-gray-500 hover:text-gray-700">
+              Find a Coach
+            </button>
+            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <span className="text-gray-900 font-medium">{coach.name}</span>
+          </nav>
+        </div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
@@ -418,9 +460,20 @@ export default function CoachProfile() {
                               </div>
                             </div>
                             <p className="text-gray-600">{review.comment}</p>
-                            <button className="flex items-center gap-2 mt-3 text-sm text-gray-500 hover:text-gray-700">
-                              <ThumbsUp className="w-4 h-4" />
-                              Helpful ({review.helpful})
+                            <button
+                              onClick={() => {
+                                if (!helpfulReviews.has(review.id)) {
+                                  setHelpfulReviews(new Set([...helpfulReviews, review.id]));
+                                }
+                              }}
+                              className={`flex items-center gap-2 mt-3 text-sm transition-all ${
+                                helpfulReviews.has(review.id)
+                                  ? 'text-teal-600 font-medium'
+                                  : 'text-gray-500 hover:text-gray-700'
+                              }`}
+                            >
+                              <ThumbsUp className={`w-4 h-4 ${helpfulReviews.has(review.id) ? 'fill-current' : ''}`} />
+                              {helpfulReviews.has(review.id) ? 'Thanks for feedback!' : `Helpful (${review.helpful})`}
                             </button>
                           </div>
                         ))}
@@ -435,115 +488,14 @@ export default function CoachProfile() {
                   </div>
                 )}
 
-                {/* Availability Tab */}
-                {activeTab === 'availability' && (
-                  <div id="availability-section">
-                    <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-lg font-semibold text-gray-900">
-                        {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                      </h2>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={goToPreviousMonth}
-                          className="p-2 hover:bg-gray-100 rounded-xl"
-                        >
-                          <ChevronLeft className="w-5 h-5 text-gray-600" />
-                        </button>
-                        <button
-                          onClick={goToNextMonth}
-                          className="p-2 hover:bg-gray-100 rounded-xl"
-                        >
-                          <ChevronRight className="w-5 h-5 text-gray-600" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-1 mb-6">
-                      {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                        <div key={day} className="text-center text-sm text-gray-500 py-2 font-medium">
-                          {day}
-                        </div>
-                      ))}
-                      {calendarDays.map((date, i) => {
-                        if (!date) {
-                          return <div key={`empty-${i}`} className="aspect-square" />;
-                        }
-                        const dateStr = formatDate(date);
-                        const isToday = formatDate(new Date()) === dateStr;
-                        const isPast = date < today;
-                        const hasSlots = getAvailableTimesForDate(dateStr).length > 0;
-                        const isSelected = selectedDate === dateStr;
-
-                        return (
-                          <button
-                            key={dateStr}
-                            onClick={() => {
-                              if (!isPast && hasSlots) {
-                                setSelectedDate(dateStr);
-                                setSelectedTime(null);
-                              }
-                            }}
-                            disabled={isPast || !hasSlots}
-                            className={`
-                              aspect-square rounded-xl text-sm font-medium transition-all flex items-center justify-center
-                              ${isPast || !hasSlots
-                                ? 'text-gray-300 cursor-not-allowed'
-                                : isSelected
-                                ? 'bg-teal-600 text-white shadow-md'
-                                : 'hover:bg-teal-50 text-gray-900'
-                              }
-                              ${isToday && !isSelected ? 'ring-2 ring-teal-600 ring-inset' : ''}
-                              ${hasSlots && !isPast && !isSelected ? 'bg-teal-50/50' : ''}
-                            `}
-                          >
-                            {date.getDate()}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Time Slots */}
-                    {selectedDate && (
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-3">
-                          Available times on {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
-                        </h3>
-                        <div className="grid grid-cols-4 gap-2">
-                          {getAvailableTimesForDate(selectedDate).map(time => (
-                            <button
-                              key={time}
-                              onClick={() => setSelectedTime(time)}
-                              className={`
-                                py-3 px-4 rounded-xl text-sm font-medium transition-all
-                                ${selectedTime === time
-                                  ? 'bg-teal-600 text-white shadow-md'
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }
-                              `}
-                            >
-                              {time}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {!selectedDate && (
-                      <div className="text-center py-8 text-gray-500">
-                        <Calendar className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-                        Select a date to see available times
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </div>
 
-          {/* Booking Sidebar */}
+          {/* Booking Sidebar with Calendar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 sticky top-24">
+              {/* Price Header */}
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <div className="text-3xl font-bold text-gray-900">${coach.pricePerSession}</div>
@@ -551,22 +503,97 @@ export default function CoachProfile() {
                 </div>
               </div>
 
-              {/* Selected DateTime Summary */}
-              {selectedDate && selectedTime && (
-                <div className="bg-teal-50 rounded-xl p-4 mb-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-sm text-gray-500">Selected</div>
-                      <div className="font-medium text-gray-900">
-                        {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {selectedTime}
-                      </div>
-                    </div>
+              {/* Calendar */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-900">
+                    {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </h3>
+                  <div className="flex items-center gap-1">
                     <button
-                      onClick={() => setActiveTab('availability')}
-                      className="text-teal-600 hover:text-teal-700"
+                      onClick={goToPreviousMonth}
+                      className="p-1.5 hover:bg-gray-100 rounded-lg"
                     >
-                      <Edit3 className="w-4 h-4" />
+                      <ChevronLeft className="w-4 h-4 text-gray-600" />
                     </button>
+                    <button
+                      onClick={goToNextMonth}
+                      className="p-1.5 hover:bg-gray-100 rounded-lg"
+                    >
+                      <ChevronRight className="w-4 h-4 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1 mb-4">
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
+                    <div key={i} className="text-center text-xs text-gray-400 py-1 font-medium">
+                      {day}
+                    </div>
+                  ))}
+                  {calendarDays.map((date, i) => {
+                    if (!date) {
+                      return <div key={`empty-${i}`} className="aspect-square" />;
+                    }
+                    const dateStr = formatDate(date);
+                    const isToday = formatDate(new Date()) === dateStr;
+                    const isPast = date < today;
+                    const hasSlots = getAvailableTimesForDate(dateStr).length > 0;
+                    const isSelected = selectedDate === dateStr;
+
+                    return (
+                      <button
+                        key={dateStr}
+                        onClick={() => {
+                          if (!isPast && hasSlots) {
+                            setSelectedDate(dateStr);
+                            setSelectedTime(null);
+                          }
+                        }}
+                        disabled={isPast || !hasSlots}
+                        className={`
+                          aspect-square rounded-lg text-xs font-medium transition-all flex items-center justify-center
+                          ${isPast || !hasSlots
+                            ? 'text-gray-300 cursor-not-allowed'
+                            : isSelected
+                            ? 'bg-teal-600 text-white'
+                            : hasSlots
+                            ? 'hover:bg-teal-100 text-gray-900 bg-teal-50'
+                            : 'text-gray-400'
+                          }
+                          ${isToday && !isSelected ? 'ring-1 ring-teal-600' : ''}
+                        `}
+                      >
+                        {date.getDate()}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Time Slots */}
+              {selectedDate && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">
+                    {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {getAvailableTimesForDate(selectedDate).map(time => (
+                      <button
+                        key={time}
+                        onClick={() => setSelectedTime(time)}
+                        className={`
+                          py-2 px-3 rounded-lg text-sm font-medium transition-all
+                          ${selectedTime === time
+                            ? 'bg-teal-600 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }
+                        `}
+                      >
+                        {time}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -587,25 +614,19 @@ export default function CoachProfile() {
                 {selectedDate && selectedTime ? 'Book This Session' : 'Select Date & Time'}
               </button>
 
-              {!selectedDate && (
-                <button
-                  onClick={() => setActiveTab('availability')}
-                  className="w-full mt-3 text-teal-600 hover:text-teal-700 text-sm font-medium"
-                >
-                  View availability calendar
-                </button>
-              )}
-
               {/* Quick Info */}
               <div className="mt-6 pt-6 border-t border-gray-100 space-y-3">
                 <div className="flex items-center gap-3 text-sm text-gray-600">
                   <Check className="w-4 h-4 text-teal-600" />
                   Free cancellation up to 24 hours before
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <MessageCircle className="w-4 h-4 text-teal-600" />
+                <button
+                  onClick={() => setShowMessageModal(true)}
+                  className="flex items-center gap-3 text-sm text-teal-600 hover:text-teal-700 transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" />
                   Message coach before booking
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -766,6 +787,96 @@ export default function CoachProfile() {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Message Coach Modal */}
+      {showMessageModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+            {messageSent ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-teal-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+                <p className="text-gray-600 mb-6">
+                  {coach.name} will respond within 24 hours.
+                </p>
+                <button
+                  onClick={() => {
+                    setShowMessageModal(false);
+                    setMessageSent(false);
+                    setMessage('');
+                  }}
+                  className="px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-gray-900">Message {coach.name}</h2>
+                  <button
+                    onClick={() => setShowMessageModal(false)}
+                    className="p-2 hover:bg-gray-100 rounded-xl"
+                  >
+                    <ChevronRight className="w-5 h-5 text-gray-500 rotate-45" />
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl mb-4">
+                  <img
+                    src={coach.avatar}
+                    alt={coach.name}
+                    className="w-12 h-12 rounded-xl object-cover"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">{coach.name}</div>
+                    <div className="text-sm text-gray-500">{coach.title}</div>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your message
+                  </label>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Hi! I'm interested in your coaching services and would like to ask about..."
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
+                  />
+                </div>
+
+                <p className="text-xs text-gray-500 mb-4">
+                  Typical response time: within 24 hours
+                </p>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowMessageModal(false)}
+                    className="flex-1 py-3 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (message.trim()) {
+                        setMessageSent(true);
+                      }
+                    }}
+                    disabled={!message.trim()}
+                    className="flex-1 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Send Message
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

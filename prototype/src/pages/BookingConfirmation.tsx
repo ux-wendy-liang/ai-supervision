@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   CheckCircle,
@@ -9,7 +10,12 @@ import {
   Download,
   ArrowRight,
   Bell,
-  User
+  User,
+  Edit3,
+  Lock,
+  Eye,
+  EyeOff,
+  Check
 } from 'lucide-react';
 
 interface BookingState {
@@ -33,6 +39,11 @@ export default function BookingConfirmation() {
   const navigate = useNavigate();
   const location = useLocation();
   const booking = location.state as BookingState | null;
+
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [accountCreated, setAccountCreated] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   // If no booking data, redirect to coaches
   if (!booking) {
@@ -199,14 +210,23 @@ END:VCALENDAR`;
           Add to Calendar
         </button>
 
-        {/* Secondary Action - View My Bookings */}
-        <button
-          onClick={() => navigate('/my-bookings')}
-          className="w-full flex items-center justify-center gap-3 py-4 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:border-gray-300 hover:bg-gray-50 transition-colors mb-8"
-        >
-          <User className="w-5 h-5" />
-          View My Bookings
-        </button>
+        {/* Secondary Actions */}
+        <div className="grid grid-cols-2 gap-3 mb-8">
+          <button
+            onClick={() => navigate('/my-bookings')}
+            className="flex items-center justify-center gap-2 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            <User className="w-5 h-5" />
+            My Bookings
+          </button>
+          <button
+            onClick={() => navigate(`/coaches/${coach.id}`)}
+            className="flex items-center justify-center gap-2 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            <Edit3 className="w-5 h-5" />
+            Reschedule
+          </button>
+        </div>
 
         {/* What's Next */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -249,6 +269,106 @@ END:VCALENDAR`;
             </div>
           </div>
         </div>
+
+        {/* Create Account Section */}
+        {!accountCreated ? (
+          <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-6 border border-teal-100 mt-6">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
+                <Lock className="w-5 h-5 text-teal-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Create your account</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Set a password to easily manage your bookings, reschedule sessions, and book again faster.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Email</label>
+                <div className="px-4 py-3 bg-white/60 border border-gray-200 rounded-xl text-gray-500">
+                  {client?.email || 'your@email.com'}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">Create Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="At least 8 characters"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    if (password.length >= 8) {
+                      setIsCreating(true);
+                      setTimeout(() => {
+                        setAccountCreated(true);
+                        setIsCreating(false);
+                      }, 1000);
+                    }
+                  }}
+                  disabled={password.length < 8 || isCreating}
+                  className={`flex-1 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2
+                    ${password.length >= 8
+                      ? 'bg-teal-600 text-white hover:bg-teal-700'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                >
+                  {isCreating ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    'Create Account'
+                  )}
+                </button>
+                <button
+                  onClick={() => setAccountCreated(true)}
+                  className="px-4 py-3 text-gray-500 hover:text-gray-700 font-medium"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mt-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <Check className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">
+                  {password ? 'Account created!' : 'No problem!'}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {password
+                    ? `You can now log in with ${client?.email || 'your email'} anytime.`
+                    : 'You can create an account later from the login page.'
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Browse More */}
         <div className="text-center mt-8">

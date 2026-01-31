@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles,
@@ -13,25 +14,30 @@ import {
   Check,
   Zap,
   Shield,
-  Clock
+  Clock,
+  Menu,
+  X
 } from 'lucide-react';
 import { coaches } from '../data/coaches';
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const featuredCoaches = coaches.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="px-6 py-4 flex justify-between items-center max-w-7xl mx-auto">
+      <header className="px-6 py-4 flex justify-between items-center max-w-7xl mx-auto relative">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <span className="text-xl font-bold text-gray-900">CoachSpace</span>
         </div>
-        <div className="flex items-center gap-4">
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-4">
           <button
             onClick={() => navigate('/coaches')}
             className="text-gray-600 hover:text-gray-900 font-medium"
@@ -51,6 +57,49 @@ export default function Landing() {
             Join as Coach
           </button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg md:hidden z-50">
+            <div className="px-6 py-4 space-y-3">
+              <button
+                onClick={() => {
+                  navigate('/coaches');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left py-2 text-gray-600 hover:text-gray-900 font-medium"
+              >
+                Find a Coach
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/login');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left py-2 text-gray-600 hover:text-gray-900 font-medium"
+              >
+                Log in
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/coach/register');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full py-3 bg-teal-600 text-white font-medium rounded-xl hover:bg-teal-700 transition-colors text-center"
+              >
+                Join as Coach
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero - Problem-focused */}
@@ -68,37 +117,23 @@ export default function Landing() {
               leadership, and personal growth. Book your first session in minutes.
             </p>
 
-            {/* Quick Search */}
-            <div className="flex gap-3 mb-6">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="What are you looking for? (e.g., career coaching)"
-                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-teal-500 text-lg"
-                  onKeyDown={(e) => e.key === 'Enter' && navigate('/coaches')}
-                />
-              </div>
+            {/* Split Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <button
                 onClick={() => navigate('/coaches')}
-                className="px-8 py-4 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors"
+                className="flex-1 px-8 py-4 bg-teal-600 text-white font-semibold rounded-xl hover:bg-teal-700 transition-colors flex items-center justify-center gap-2"
               >
-                Search
+                <Search className="w-5 h-5" />
+                Find a Coach
               </button>
-            </div>
-
-            {/* Popular searches */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-gray-500">Popular:</span>
-              {['Career Coaching', 'Leadership', 'Life Balance', 'Executive'].map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => navigate('/coaches')}
-                  className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
-                >
-                  {tag}
-                </button>
-              ))}
+              <button
+                onClick={() => navigate('/for-coaches')}
+                className="flex-1 px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+              >
+                <Users className="w-5 h-5" />
+                I'm a Coach
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -341,112 +376,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* For Coaches Section */}
-      <section className="px-6 py-20 bg-gradient-to-br from-gray-900 to-gray-800">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-                <Users className="w-4 h-4" />
-                For Coaches
-              </div>
-              <h2 className="text-4xl font-bold text-white mb-6">
-                Grow Your Practice.<br />
-                <span className="text-teal-400">Let Clients Find You.</span>
-              </h2>
-              <p className="text-gray-300 text-lg mb-8">
-                Stop chasing clients. Join CoachSpace and let qualified clients come to you.
-                Plus, our AI Supervision tools help you continuously improve.
-              </p>
-
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-white">Get discovered by clients</div>
-                    <div className="text-gray-400 text-sm">SEO-optimized profiles bring clients to you</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-white">Easy booking & scheduling</div>
-                    <div className="text-gray-400 text-sm">Built-in calendar, reminders, and payments</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-white">AI-powered supervision</div>
-                    <div className="text-gray-400 text-sm">Get feedback on real sessions, track your growth</div>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={() => navigate('/coach/register')}
-                className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl hover:shadow-lg transition-all"
-              >
-                Join as a Coach - It's Free
-              </button>
-            </div>
-
-            {/* AI Supervision Preview */}
-            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <div className="font-semibold text-white">AI Supervision</div>
-                  <div className="text-sm text-gray-400">Exclusive to CoachSpace coaches</div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-white/10 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <MessageSquare className="w-4 h-4 text-teal-400" />
-                    <span className="text-sm font-medium text-white">Real-time Feedback</span>
-                  </div>
-                  <p className="text-gray-300 text-sm">
-                    "Great use of powerful questions! Consider giving more space after reflections."
-                  </p>
-                </div>
-
-                <div className="bg-white/10 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-4 h-4 text-teal-400" />
-                    <span className="text-sm font-medium text-white">ICF Competency Scores</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 bg-white/10 rounded-full h-2">
-                      <div className="bg-teal-500 h-2 rounded-full" style={{ width: '85%' }} />
-                    </div>
-                    <span className="text-teal-400 font-medium">85/100</span>
-                  </div>
-                </div>
-
-                <div className="bg-white/10 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-4 h-4 text-teal-400" />
-                    <span className="text-sm font-medium text-white">Track Your Growth</span>
-                  </div>
-                  <p className="text-gray-300 text-sm">
-                    Your active listening scores improved 15% this month!
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Specialties */}
       <section className="px-6 py-20 max-w-7xl mx-auto">

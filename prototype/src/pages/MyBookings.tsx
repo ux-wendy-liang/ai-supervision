@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sparkles,
@@ -12,36 +12,7 @@ import {
   Check,
   MessageCircle
 } from 'lucide-react';
-
-// Mock bookings data
-const mockBookings = [
-  {
-    id: 'BK-001',
-    coach: {
-      name: 'Sarah Chen',
-      title: 'Executive Leadership Coach',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'
-    },
-    date: '2026-02-03',
-    time: '10:00',
-    duration: 60,
-    status: 'upcoming' as const,
-    topic: 'Career transition discussion'
-  },
-  {
-    id: 'BK-002',
-    coach: {
-      name: 'Michael Roberts',
-      title: 'Business Strategy Coach',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400'
-    },
-    date: '2026-01-20',
-    time: '14:00',
-    duration: 60,
-    status: 'completed' as const,
-    topic: 'Goal setting session'
-  }
-];
+import { getBookings, cancelBooking as cancelBookingInStore, type Booking } from '../data/bookingStore';
 
 type TabType = 'upcoming' | 'past';
 
@@ -49,22 +20,35 @@ export default function MyBookings() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('upcoming');
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<typeof mockBookings[0] | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [cancelReason, setCancelReason] = useState('');
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
-  const upcomingBookings = mockBookings.filter(b => b.status === 'upcoming');
-  const pastBookings = mockBookings.filter(b => b.status === 'completed');
+  // Load bookings from localStorage
+  useEffect(() => {
+    setBookings(getBookings());
+  }, []);
 
-  const handleCancelClick = (booking: typeof mockBookings[0]) => {
+  const upcomingBookings = bookings.filter(b => b.status === 'upcoming');
+  const pastBookings = bookings.filter(b => b.status === 'completed' || b.status === 'cancelled');
+
+  const handleCancelClick = (booking: Booking) => {
     setSelectedBooking(booking);
     setShowCancelModal(true);
   };
 
   const confirmCancel = () => {
+    if (!selectedBooking) return;
+
     setIsCancelling(true);
     setTimeout(() => {
+      // Update localStorage
+      cancelBookingInStore(selectedBooking.id);
+      // Update local state
+      setBookings(getBookings());
+
       setIsCancelling(false);
       setCancelSuccess(true);
       setTimeout(() => {

@@ -1,16 +1,34 @@
-import { useNavigate } from 'react-router-dom';
-import { Sparkles, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Sparkles, Mail, Lock, ArrowLeft, User, Briefcase } from 'lucide-react';
+
+type UserType = 'client' | 'coach';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const defaultType = searchParams.get('type') as UserType || 'client';
+
+  const [userType, setUserType] = useState<UserType>(defaultType);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard');
+    setIsLoading(true);
+
+    // Simulate login
+    setTimeout(() => {
+      setIsLoading(false);
+      if (userType === 'coach') {
+        navigate('/coach/dashboard');
+      } else {
+        navigate('/my-bookings');
+      }
+    }, 800);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate('/')}
@@ -21,14 +39,42 @@ export default function Login() {
         </button>
 
         <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">AI Coach Mentor</h1>
+              <h1 className="text-xl font-bold text-gray-900">CoachSpace</h1>
               <p className="text-sm text-gray-500">Sign in to continue</p>
             </div>
+          </div>
+
+          {/* User Type Selector */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <button
+              type="button"
+              onClick={() => setUserType('client')}
+              className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${
+                userType === 'client'
+                  ? 'border-teal-600 bg-teal-50 text-teal-700'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300'
+              }`}
+            >
+              <User className="w-5 h-5" />
+              <span className="font-medium">I'm a Client</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setUserType('coach')}
+              className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${
+                userType === 'coach'
+                  ? 'border-teal-600 bg-teal-50 text-teal-700'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300'
+              }`}
+            >
+              <Briefcase className="w-5 h-5" />
+              <span className="font-medium">I'm a Coach</span>
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -39,7 +85,8 @@ export default function Login() {
                 <input
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
+                  defaultValue={userType === 'coach' ? 'sarah@example.com' : ''}
+                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -51,28 +98,44 @@ export default function Login() {
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
+                  defaultValue="password"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-500" />
+                <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500" />
                 <span className="text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-gray-900 hover:text-gray-700">Forgot password?</a>
+              <button type="button" className="text-teal-600 hover:text-teal-700">Forgot password?</button>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-gray-500/30 transition-all"
+              disabled={isLoading}
+              className="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-teal-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              Sign In
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                `Sign In as ${userType === 'coach' ? 'Coach' : 'Client'}`
+              )}
             </button>
           </form>
 
-          <div className="relative my-8">
+          {/* Demo hint */}
+          <div className="mt-4 p-3 bg-gray-50 rounded-xl text-center">
+            <p className="text-xs text-gray-500">
+              Demo mode: Click sign in to explore the {userType === 'coach' ? 'Coach Portal' : 'client experience'}
+            </p>
+          </div>
+
+          <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
             </div>
@@ -82,7 +145,16 @@ export default function Login() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+            <button
+              type="button"
+              onClick={() => {
+                setIsLoading(true);
+                setTimeout(() => {
+                  navigate(userType === 'coach' ? '/coach/dashboard' : '/my-bookings');
+                }, 500);
+              }}
+              className="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+            >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -91,7 +163,16 @@ export default function Login() {
               </svg>
               <span className="text-gray-700 font-medium">Google</span>
             </button>
-            <button className="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+            <button
+              type="button"
+              onClick={() => {
+                setIsLoading(true);
+                setTimeout(() => {
+                  navigate(userType === 'coach' ? '/coach/dashboard' : '/my-bookings');
+                }, 500);
+              }}
+              className="flex items-center justify-center gap-2 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+            >
               <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
@@ -99,9 +180,14 @@ export default function Login() {
             </button>
           </div>
 
-          <p className="text-center text-gray-600 text-sm mt-8">
+          <p className="text-center text-gray-600 text-sm mt-6">
             Don't have an account?{' '}
-            <a href="#" className="text-gray-900 hover:text-gray-700 font-medium">Sign up free</a>
+            <button
+              onClick={() => navigate(userType === 'coach' ? '/coach/register' : '/coaches')}
+              className="text-teal-600 hover:text-teal-700 font-medium"
+            >
+              {userType === 'coach' ? 'Join as Coach' : 'Browse Coaches'}
+            </button>
           </p>
         </div>
       </div>
