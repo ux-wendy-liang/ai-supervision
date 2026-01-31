@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import CoachLayout from './components/CoachLayout';
 import Landing from './pages/Landing';
+import ForCoaches from './pages/ForCoaches';
 import Login from './pages/Login';
 import CoachDirectory from './pages/CoachDirectory';
 import CoachProfile from './pages/CoachProfile';
@@ -10,12 +11,12 @@ import MyBookings from './pages/MyBookings';
 // Coach Portal
 import CoachDashboard from './pages/coach/CoachDashboard';
 import CoachBookings from './pages/coach/CoachBookings';
-import CoachAvailability from './pages/coach/CoachAvailability';
-import CoachProfileEdit from './pages/coach/CoachProfileEdit';
 import CoachSupervision from './pages/coach/CoachSupervision';
+import CoachSettings from './pages/coach/CoachSettings';
 import SessionReview from './pages/coach/SessionReview';
 import LiveSession from './pages/coach/LiveSession';
 import LiveSessionIteration1 from './pages/coach/LiveSessionIteration1';
+import CoachOnboarding from './pages/coach/CoachOnboarding';
 
 // Case Study
 import CaseStudy from './pages/CaseStudy';
@@ -52,20 +53,21 @@ function App() {
       <Routes>
         {/* Public routes - Coach Ecosystem */}
         <Route path="/" element={<Landing />} />
+        <Route path="/for-coaches" element={<ForCoaches />} />
         <Route path="/coaches" element={<CoachDirectory />} />
         <Route path="/coaches/:id" element={<CoachProfile />} />
         <Route path="/booking-confirmation" element={<BookingConfirmation />} />
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/coach/register" element={<CoachRegister />} />
+        <Route path="/coach/onboarding" element={<CoachOnboarding />} />
         <Route path="/login" element={<Login />} />
 
         {/* Coach Portal - with sidebar layout */}
         <Route element={<CoachLayout />}>
           <Route path="/coach/dashboard" element={<CoachDashboard />} />
-          <Route path="/coach/bookings" element={<CoachBookings />} />
-          <Route path="/coach/availability" element={<CoachAvailability />} />
-          <Route path="/coach/profile" element={<CoachProfileEdit />} />
-          <Route path="/coach/supervision" element={<CoachSupervision />} />
+          <Route path="/coach/sessions" element={<CoachBookings />} />
+          <Route path="/coach/growth" element={<CoachSupervision />} />
+          <Route path="/coach/settings" element={<CoachSettings />} />
         </Route>
 
         {/* Coach full screen routes */}

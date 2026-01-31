@@ -15,9 +15,9 @@ import {
 
 const navItems = [
   { to: '/coach/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/coach/bookings', icon: Calendar, label: 'Bookings' },
-  { to: '/coach/availability', icon: Users, label: 'Availability' },
-  { to: '/coach/supervision', icon: Zap, label: 'AI Supervision' },
+  { to: '/coach/sessions', icon: Calendar, label: 'Sessions' },
+  { to: '/coach/growth', icon: Zap, label: 'Growth' },
+  { to: '/coach/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function CoachLayout() {
@@ -98,16 +98,6 @@ export default function CoachLayout() {
 
               {showProfileMenu && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                  <button
-                    onClick={() => {
-                      navigate('/coach/profile');
-                      setShowProfileMenu(false);
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 text-left"
-                  >
-                    <User className="w-4 h-4" />
-                    My Profile
-                  </button>
                   <button
                     onClick={() => {
                       navigate('/coach/settings');

@@ -138,7 +138,7 @@ export default function CoachRegister() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      navigate('/coach/dashboard');
+      navigate('/coach/onboarding');
     }, 1500);
   };
 
