@@ -14,14 +14,6 @@ const allSpecialties = [
   'Personal Branding'
 ];
 
-const allCertifications = [
-  'ICF ACC',
-  'ICF PCC',
-  'ICF MCC',
-  'CTI CPCC',
-  'NBC-HWC',
-  'SHRM-SCP'
-];
 
 type VerificationStatus = 'pending' | 'verified' | 'rejected' | 'not_uploaded';
 
@@ -93,15 +85,6 @@ I draw from ICF core competencies, adult development theory, and systems thinkin
       specialties: prev.specialties.includes(specialty)
         ? prev.specialties.filter(s => s !== specialty)
         : [...prev.specialties, specialty]
-    }));
-  };
-
-  const toggleCertification = (cert: string) => {
-    setProfile(prev => ({
-      ...prev,
-      certifications: prev.certifications.includes(cert)
-        ? prev.certifications.filter(c => c !== cert)
-        : [...prev.certifications, cert]
     }));
   };
 

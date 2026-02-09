@@ -11,7 +11,6 @@ import {
   MessageSquare,
   Target,
   ArrowRight,
-  Check,
   Zap,
   Shield,
   Clock,
